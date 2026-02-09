@@ -74,7 +74,7 @@ The platform allows customers to create custom jewelry designs and helps adminis
 ## 📸 Screenshots
 
 ### Custom Bracelet Designer
-![Bracelet Designer Preview](https://via.placeholder.com/600x300.png?text=Custom+Bracelet+Designer)
+![Bracelet Designer Preview](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Build.png)
 
 ### Build Protocol
 ![alt tsxt](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Bild%20protocol.png)

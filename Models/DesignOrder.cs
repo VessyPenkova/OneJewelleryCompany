@@ -44,7 +44,7 @@ namespace OneJevelsCompany.Web.Models
         public string Status { get; set; } = "Pending";
 
         // PNG screenshot captured from the canvas (data URL).
-        [Column(TypeName = "nvarchar(max)")]
+      
         public string? PreviewDataUrl { get; set; }
 
         // Optional extras

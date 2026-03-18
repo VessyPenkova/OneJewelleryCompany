@@ -7,82 +7,138 @@
     string? email = user?.Email ?? "admin";
     var title = ViewData["Title"]?.ToString() ?? "Admin";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@title — One Jeweler Company</title>
+    <title>@title — One Jeweller Company</title>
 
-    <!-- Tailwind (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Your site CSS (colors + inventory styles you added) -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<body class="min-h-screen flex flex-col bg-[#f9f3e9] text-[#3b3b3b]">
-    <!-- Top bar (not fixed) -->
-    <header class="bg-[#efdfc3] text-[#3b3b3b] shadow-sm h-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
-            <div class="font-semibold">One Jewellery Company</div>
+<body class="min-h-screen flex flex-col bg-[#f8f4ec] text-[#3b3b3b]">
 
-            <nav class="hidden md:flex items-center gap-6 text-sm">
-                <a class="hover:underline" href="/Admin/Dashboard">Admin</a>
-                <a class="hover:underline" href="/Admin/NewInvoice">New Invoice</a>
-                <a class="hover:underline" href="/Admin/Invoices">Invoices</a>
-                <a class="hover:underline" href="/Admin/Components">Components</a>
-                <a class="hover:underline" href="/Admin/Jewels">Jewels</a>
+    <!-- Top bar -->
+    <header class="h-16 bg-[#efe2c8] border-b border-[#e4d3b2] shadow-sm">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-6">
+
+            <div class="flex items-center gap-4 shrink-0">
+                <a href="/Admin/Dashboard" class="text-xl font-bold tracking-tight text-[#6f5b3e] hover:text-[#8b6f47] transition">
+                    One Jewellery Company
+                </a>
+                <span class="hidden lg:inline text-xs uppercase tracking-[0.2em] text-[#9c8a6a] bg-white/60 rounded-full px-3 py-1">
+                    Admin Panel
+                </span>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-[#5f513c]">
+                <a class="hover:text-[#b08d57] transition" href="/Admin/Dashboard">Admin</a>
+                <a class="hover:text-[#b08d57] transition" href="/Admin/NewInvoice">New Invoice</a>
+                <a class="hover:text-[#b08d57] transition" href="/Admin/Invoices">Invoices</a>
+                <a class="hover:text-[#b08d57] transition" href="/Admin/Components">Components</a>
+                <a class="hover:text-[#b08d57] transition" href="/Admin/Jewels">Jewels</a>
             </nav>
 
-            <div class="text-sm">
-                <span class="hidden sm:inline">Hello, @email</span>
-                <a class="ml-4 text-red-600 hover:underline" asp-controller="Account" asp-action="Logout">Logout</a>
+            <div class="flex items-center gap-4 text-sm shrink-0">
+                <div class="hidden sm:flex items-center gap-2 text-[#6d5d45] bg-white/60 rounded-full px-4 py-2">
+                    <span class="h-2.5 w-2.5 rounded-full bg-green-500"></span>
+                    <span>Hello, @email</span>
+                </div>
+
+                <a class="text-red-600 hover:text-red-700 font-medium transition"
+                   asp-controller="Account"
+                   asp-action="Logout">
+                    Logout
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- Shell: sidebar + main; height is full viewport minus header (3rem) -->
-    <div class="flex-1 flex min-h-[calc(100vh-3rem)]">
-        <!-- Sidebar (sticky / scrolls independently if long) -->
-        <aside class="w-[260px] shrink-0 border-r bg-white/80
-                       sticky top-0 h-[calc(100vh-3rem)] overflow-y-auto">
-            <div class="px-6 py-4 text-sm">
-                <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Management</div>
-                <a href="/Admin/Dashboard" class="block py-1.5 hover:underline">Dashboard</a>
+    <!-- Shell -->
+    <div class="flex-1 flex min-h-[calc(100vh-4rem)]">
 
-                <div class="mt-5 text-xs uppercase tracking-wide text-gray-500 mb-1">Purchasing</div>
-                <a href="/Admin/NewInvoice" class="block py-1.5 hover:underline">New Invoice</a>
-                <a href="/Admin/Invoices" class="block py-1.5 hover:underline">Invoices</a>
-                <a href="/Admin/PurchaseQueue" class="block py-1.5 hover:underline">Purchase Queue</a>
+        <!-- Sidebar -->
+        <aside class="w-[250px] shrink-0 border-r border-[#e7dcc9] bg-[#fcfaf6]">
+            <div class="px-5 py-6 text-sm space-y-6">
 
-                <div class="mt-5 text-xs uppercase tracking-wide text-gray-500 mb-1">Catalog</div>
-                <a href="/Admin/Components" class="block py-1.5 hover:underline">Components</a>
-                <a href="/Admin/Components/New" class="block py-1.5 hover:underline">New Item</a>
-                <a href="/Admin/Category" class="block py-1.5 hover:underline">Categories</a>
-                <a href="/Admin/NewCategory" class="block py-1.5 hover:underline">New Category</a>
-                <a href="/Admin/Jewels" class="block py-1.5 hover:underline">Jewels</a>
+                <div>
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-3">Management</div>
+                    <div class="space-y-1">
+                        <a href="/Admin/Dashboard" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Dashboard
+                        </a>
+                    </div>
+                </div>
 
-                <!-- Inventory link styled the same way as Jewels -->
-                <a href="/Admin/Inventory" class="block py-1.5 hover:underline">Inventory</a>
+                <div>
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-3">Purchasing</div>
+                    <div class="space-y-1">
+                        <a href="/Admin/NewInvoice" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            New Invoice
+                        </a>
+                        <a href="/Admin/Invoices" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Invoices
+                        </a>
+                        <a href="/Admin/PurchaseQueue" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Purchase Queue
+                        </a>
+                    </div>
+                </div>
 
-                <div class="mt-5 text-xs uppercase tracking-wide text-gray-500 mb-1">Design Orders</div>
-                <a href="/Admin/DesignOrders" class="block py-1.5 hover:underline">Pending</a>
-                <a href="/Admin/ReadyDesignOrders" class="block py-1.5 hover:underline">Ready</a>
+                <div>
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-3">Catalog</div>
+                    <div class="space-y-1">
+                        <a href="/Admin/Components" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Components
+                        </a>
+                        <a href="/Admin/Components/New" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            New Item
+                        </a>
+                        <a href="/Admin/Category" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Categories
+                        </a>
+                        <a href="/Admin/NewCategory" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            New Category
+                        </a>
+                        <a href="/Admin/Jewels" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Jewels
+                        </a>
+                        <a href="/Admin/Inventory" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Inventory
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-3">Design Orders</div>
+                    <div class="space-y-1">
+                        <a href="/Admin/DesignOrders" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Pending
+                        </a>
+                        <a href="/Admin/ReadyDesignOrders" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Ready
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
-        <!-- Main content; allow horizontal scroll for wide tables -->
+        <!-- Main content -->
         <main class="flex-1 overflow-x-auto">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
                 @RenderBody()
             </div>
         </main>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-auto bg-[#efdfc3] text-[#3b3b3b]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center text-sm">
+    <footer class="mt-auto border-t border-[#e4d3b2] bg-[#efe2c8] text-[#5f513c]">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center text-sm">
             © @DateTime.UtcNow.Year One Jewellery Company — Crafted with
             <svg viewBox="0 0 24 24" class="w-4 h-4 mx-1 inline-block text-amber-500" fill="currentColor" aria-hidden="true">
                 <path d="M12 2l4 4 6 1-8 11H10L2 7l6-1 4-4zM5 8l7 9 7-9-3-.5L12 4 8 7.5 5 8z" />

@@ -77,6 +77,14 @@ namespace OneJevelsCompany.Web.Controllers
             return View(vm);
         }
 
+        [HttpGet("/Shop/Components")]
+        [Authorize]
+        public async Task<IActionResult> Components()
+        {
+            var comps = await _products.GetComponentsAsync();
+            return View("Build", comps);
+        }
+
         [HttpGet("/Shop/Configure/{id:int}", Name = RouteNames.Shop.ConfigureGet)]
         [AllowAnonymous]
         public async Task<IActionResult> Configure(int id)

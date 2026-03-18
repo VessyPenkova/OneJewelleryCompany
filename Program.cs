@@ -25,7 +25,7 @@ var connectionString = builder.Configuration.GetConnectionString(activeConnKey)
     ?? throw new InvalidOperationException($"Connection string '{activeConnKey}' not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlite(connectionString));
 
 // Identity (Default UI + Roles)
 builder.Services
@@ -47,7 +47,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.LogoutPath = "/Account/Logout";
 
-    // Optional but nice:
     options.SlidingExpiration = true;
 });
 
@@ -73,13 +72,57 @@ builder.Services.AddScoped<ICategoryLookup, CategoryLookup>();
 
 var app = builder.Build();
 
-// Apply migrations, data seed, identity seed
+// Apply migrations + create roles + create permanent admin user
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var services = scope.ServiceProvider;
+
+    var db = services.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
-    await SeedData.ApplyAsync(db);
-    await IdentitySeed.ApplyAsync(app.Services);
+
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+    // Create roles if missing
+    string[] roles = { "Admin", "User" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // Create permanent admin user if missing
+    string adminEmail = "admin@onejewellery.com";
+    string adminPassword = "Admin123";
+
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
 }
 
 if (!app.Environment.IsDevelopment())

@@ -343,4 +343,205 @@ body {
 
 
 
+/* ===== Primary button ===== */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.2rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    text-decoration: none;
+    background: var(--ch-600);
+    color: white;
+    box-shadow: 0 4px 10px rgba(101, 88, 63, 0.20);
+    transition: all 0.15s ease;
+}
 
+    .btn-primary:hover {
+        background: var(--ch-500);
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(101, 88, 63, 0.24);
+    }
+
+    .btn-primary:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 6px rgba(101, 88, 63, 0.18);
+    }
+
+.btn-outline-soft {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.2rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    text-decoration: none;
+    background: white;
+    color: var(--ch-800);
+    border: 1px solid var(--ch-300);
+    box-shadow: 0 2px 6px rgba(101, 88, 63, 0.08);
+    transition: all 0.15s ease;
+}
+
+    .btn-outline-soft:hover {
+        background: var(--ch-50);
+        border-color: var(--ch-400);
+        transform: translateY(-1px);
+    }
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.3rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    text-decoration: none;
+    background: linear-gradient(to bottom, var(--ch-500), var(--ch-700));
+    color: white;
+    border: 1px solid var(--ch-800);
+    box-shadow: 0 4px 0 var(--ch-800), 0 8px 14px rgba(0,0,0,0.18);
+    transition: all 0.12s ease;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 0 var(--ch-800), 0 10px 16px rgba(0,0,0,0.20);
+    }
+
+    .btn-primary:active {
+        transform: translateY(3px);
+        box-shadow: 0 1px 0 var(--ch-800), 0 3px 6px rgba(0,0,0,0.16);
+    }
+
+.btn-login,
+.btn-register {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    height: 38px;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+}
+
+.btn-login {
+    color: var(--ch-800);
+    background: #fff;
+    border: 1px solid var(--ch-300);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+    .btn-login:hover {
+        background: var(--ch-50);
+        border-color: var(--ch-400);
+    }
+
+.btn-register {
+    color: var(--ch-900);
+    background: var(--ch-300);
+    border: 1px solid var(--ch-400);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+    .btn-register:hover {
+        background: var(--ch-400);
+        border-color: var(--ch-500);
+    }
+
+
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 36px;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ch-900);
+    background: var(--ch-100); /* lighter than navbar */
+
+    border: 1px solid var(--ch-300);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    transition: all 0.15s ease;
+}
+
+    .btn-nav:hover {
+        background: var(--ch-200);
+        border-color: var(--ch-400);
+    }
+
+
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 36px;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--ch-900);
+    background: var(--ch-100);
+    border: 1px solid var(--ch-300);
+    /* 🔥 very subtle lift */
+    box-shadow: 0 1px 1px rgba(0,0,0,0.03);
+    transition: all 0.15s ease;
+}
+
+    .btn-nav:hover {
+        background: var(--ch-200);
+        border-color: var(--ch-400);
+        /* slightly more lift on hover */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+.nav-link {
+    padding: 0.4rem 0.6rem;
+    border-radius: 9999px;
+    color: #4b5563;
+    transition: all 0.15s ease;
+}
+
+    .nav-link:hover {
+        background: var(--ch-50);
+        color: var(--ch-700);
+    }
+
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 36px;
+    padding: 0 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: var(--ch-100);
+    color: var(--ch-900);
+    border: 1px solid var(--ch-300);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.03);
+    transition: all 0.15s ease;
+}
+
+    .btn-nav:hover {
+        background: var(--ch-200);
+        border-color: var(--ch-400);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+}

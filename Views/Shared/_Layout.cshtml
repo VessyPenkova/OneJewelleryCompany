@@ -1,11 +1,8 @@
-﻿@* Views/Shared/_Layout.cshtml *@
-@{
-    // Reliable controller/area detection
+﻿@{
     var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();
     var area = (ViewContext.RouteData.Values["area"]?.ToString() ?? "").ToLowerInvariant();
     var isAdmin = User.IsInRole("Admin");
 
-    // Show admin shell (sidebar) for Admin controller pages and the Inventory controller.
     bool useAdminShell = isAdmin && (controller == "admin" || controller == "inventory" || area == "admin");
 }
 
@@ -15,113 +12,119 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - One Jewellery Company</title>
-
-    <!-- Tailwind (CDN) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Theme + site CSS -->
+    <!-- Theme -->
     <link rel="stylesheet" href="~/css/champagne-theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <!-- ✅ FAVICON -->
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon-16x16.png" />
 </head>
 
-<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex flex-col">
-    <!-- Top nav -->
-    <nav class="bg-white shadow-md px-4 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a asp-controller="Home" asp-action="Index" class="text-2xl font-bold text-amber-600">
-                One Jewellery Company
-            </a>
+<body class="font-sans text-gray-800 min-h-screen flex flex-col">
 
-            <div class="hidden md:flex items-center gap-5">
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-controller="Admin" asp-action="Index" class="font-semibold hover:text-amber-600">Admin</a>
-                    <a asp-controller="Admin" asp-action="NewInvoice" class="hover:text-amber-600">New Invoice</a>
-                    <a asp-controller="Admin" asp-action="Invoices" class="hover:text-amber-600">Invoices</a>
-                    <a asp-controller="Admin" asp-action="Components" class="hover:text-amber-600">Components</a>
-                    <a asp-controller="Admin" asp-action="Jewels" class="hover:text-amber-600">Jewels</a>
-                    <a href="/Inventory" class="hover:text-amber-600">Inventory</a>
-                }
-                else
-                {
-                    <a asp-controller="Home" asp-action="Index" class="hover:text-amber-600">Home</a>
-                    <a asp-controller="Home" asp-action="About" class="hover:text-amber-600">About</a>
-                    <a asp-controller="Shop" asp-action="Collections" class="hover:text-amber-600">Collections</a>
-                    <a asp-controller="Shop" asp-action="Components" class="hover:text-amber-600">Components</a>
-                    <a asp-controller="Shop" asp-action="Build" class="hover:text-amber-600">Build Your Own</a>
-                    <a asp-controller="Designs" asp-action="Index" class="hover:text-amber-600">Designs</a>
-                    <a asp-controller="Cart" asp-action="Cart" class="hover:text-amber-600">Cart</a>
-                }
+    <!-- NAVBAR -->
+    <nav class="bg-white/95 backdrop-blur border-b border-amber-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between h-20">
 
-                @if (User?.Identity?.IsAuthenticated == true)
-                {
-                    <span class="text-gray-500">Hello, @User.Identity!.Name</span>
+                <!-- Logo -->
+                <a asp-controller="Home" asp-action="Index" class="leading-tight">
+                    <div class="text-2xl font-bold text-amber-700">
+                        One Jewellery Company
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        Crafted elegance for every detail
+                    </div>
+                </a>
 
-                    <!-- ✅ Logout through YOUR AccountController -->
-                    <form class="inline" method="post" asp-controller="Account" asp-action="Logout">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="text-red-600 hover:underline">Logout</button>
-                    </form>
-                }
-                else
-                {
-                    <!-- ✅ Login/Register through YOUR AccountController -->
-                    <a asp-controller="Account" asp-action="Login" class="hover:text-amber-600">Login</a>
-                    <a asp-controller="Account" asp-action="Register" class="hover:text-amber-600">Register</a>
-                }
+                <!-- Menu -->
+                <div class="flex items-center gap-6 text-sm font-medium">
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Dashboard" class="nav-link">Admin</a>
+                        <a asp-controller="Admin" asp-action="Invoices" class="nav-link">Invoices</a>
+                        <a asp-controller="Admin" asp-action="Components" class="nav-link">Components</a>
+                        <a asp-controller="Admin" asp-action="Jewels" class="nav-link">Jewels</a>
+                        <a href="/Inventory" class="nav-link">Inventory</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
+                        <a asp-controller="Home" asp-action="About" class="nav-link">About</a>
+                        <a asp-controller="Shop" asp-action="Collections" class="nav-link">Collections</a>
+                        <a asp-controller="Shop" asp-action="Build" class="nav-link">Build Your Own</a>
+                        <a asp-controller="Designs" asp-action="Index" class="nav-link">Designs</a>
+                        <a asp-controller="Cart" asp-action="Cart" class="nav-link">Cart</a>
+                    }
+
+                    <!-- Auth -->
+                    <div class="flex items-center gap-3 ml-4">
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <span class="text-gray-600 text-sm">
+                                @User.Identity.Name
+                            </span>
+
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn-nav">
+                                    Logout
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn-nav">
+                                Login
+                            </a>
+
+                            <a asp-controller="Account" asp-action="Register" class="btn-nav">
+                                Register
+                            </a>
+                        }
+                    </div>
+                </div>
+
             </div>
         </div>
     </nav>
 
+    <!-- ADMIN LAYOUT -->
     @if (useAdminShell)
     {
-        <!-- Admin shell: sticky sidebar + main -->
-        <div class="flex-1 flex min-h-[calc(100vh-4rem)]">
-            <!-- Sidebar -->
-            <aside class="w-[260px] shrink-0 border-r bg-white/80 sticky top-0 h-[calc(100vh-4rem)] overflow-y-auto">
-                <div class="px-6 py-4 text-sm">
-                    <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Management</div>
-                    <a href="/Admin/Dashboard" class="block py-1.5 hover:underline">Dashboard</a>
-
-                    <div class="mt-5 text-xs uppercase tracking-wide text-gray-500 mb-1">Purchasing</div>
-                    <a href="/Admin/NewInvoice" class="block py-1.5 hover:underline">New Invoice</a>
-                    <a href="/Admin/Invoices" class="block py-1.5 hover:underline">Invoices</a>
-                    <a href="/Admin/PurchaseQueue" class="block py-1.5 hover:underline">Purchase Queue</a>
-
-                    <div class="mt-5 text-xs uppercase tracking-wide text-gray-500 mb-1">Catalog</div>
-                    <a href="/Admin/Components" class="block py-1.5 hover:underline">Components</a>
-                    <a href="/Admin/Components/New" class="block py-1.5 hover:underline">New Item</a>
-                    <a href="/Admin/Category" class="block py-1.5 hover:underline">Categories</a>
-                    <a href="/Admin/NewCategory" class="block py-1.5 hover:underline">New Category</a>
-                    <a href="/Admin/Jewels" class="block py-1.5 hover:underline">Jewels</a>
-                    <a href="/Admin/Inventory" class="block py-1.5 hover:underline">Inventory</a>
-
-                    <div class="mt-5 text-xs uppercase tracking-wide text-gray-500 mb-1">Design Orders</div>
-                    <a href="/Admin/DesignOrders" class="block py-1.5 hover:underline">Pending</a>
-                    <a href="/Admin/ReadyDesignOrders" class="block py-1.5 hover:underline">Ready</a>
-                </div>
+        <div class="flex flex-1">
+            <aside class="w-64 bg-white border-r p-4">
+                <a href="/Admin/Dashboard" class="block py-2">Dashboard</a>
+                <a href="/Admin/Invoices" class="block py-2">Invoices</a>
+                <a href="/Admin/Components" class="block py-2">Components</a>
+                <a href="/Admin/Jewels" class="block py-2">Jewels</a>
+                <a href="/Admin/Inventory" class="block py-2">Inventory</a>
             </aside>
 
-            <!-- Main content -->
-            <main class="flex-1 overflow-x-auto">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    @RenderBody()
-                </div>
+            <main class="flex-1 p-6">
+                @RenderBody()
             </main>
         </div>
     }
     else
     {
-        <!-- Public shell -->
-        <main class="container mx-auto mt-8 px-4 flex-1">
+        <main class="flex-1 container mx-auto px-4 mt-8">
             @RenderBody()
         </main>
     }
 
-    <footer class="mt-12 text-center text-sm text-gray-500 border-t py-4">
+    <!-- FOOTER -->
+    <footer class="text-center text-sm text-gray-500 border-t py-4 mt-10">
         &copy; @DateTime.Now.Year One Jewellery Company — Crafted with 💎 precision
     </footer>
 
     @RenderSection("Scripts", required: false)
+
 </body>
 </html>

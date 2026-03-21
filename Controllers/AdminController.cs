@@ -32,8 +32,6 @@ namespace OneJevelsCompany.Web.Controllers
             _images = images;
         }
 
-        // ====================== NESTED VMs (used by several views) ======================
-
         public class DesignOrderDetailsVm
         {
             public DesignOrder Order { get; set; } = null!;
@@ -282,7 +280,6 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Admin/ReadyDesignOrders.cshtml", orders);
         }
 
-        // NEW
         [HttpGet("/Admin/ItemOrders")]
         public async Task<IActionResult> ItemOrders()
         {
@@ -295,7 +292,6 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Admin/ItemOrders.cshtml", orders);
         }
 
-        // NEW
         [HttpGet("/Admin/JewelryOrders")]
         public async Task<IActionResult> JewelryOrders()
         {
@@ -306,6 +302,82 @@ namespace OneJevelsCompany.Web.Controllers
                 .ToListAsync();
 
             return View("~/Views/Admin/JewelryOrders.cshtml", orders);
+        }
+
+        // NEW: create customer sales invoice from webshop order
+        [HttpPost("/Admin/Order/{id:int}/CreateCustomerInvoice")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCustomerInvoice(int id)
+        {
+            var order = await _db.Orders
+                .Include(o => o.Items)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null)
+                return NotFound();
+
+            if (order.Items == null || !order.Items.Any())
+            {
+                TempData["Err"] = "This order has no items.";
+                return RedirectToAction(order.OrderType == "Item" ? nameof(ItemOrders) : nameof(JewelryOrders));
+            }
+
+            var invoice = new SalesInvoice
+            {
+                Number = $"S-{DateTime.UtcNow:yyyyMMddHHmmss}",
+                IssuedOnUtc = DateTime.UtcNow,
+                CustomerName = order.CustomerEmail,
+                CustomerEmail = order.CustomerEmail,
+                SellerUserName = User?.Identity?.Name ?? "admin"
+            };
+
+            foreach (var item in order.Items)
+            {
+                var articleName = string.IsNullOrWhiteSpace(item.CustomDesignName)
+                    ? item.Title
+                    : item.CustomDesignName!;
+
+                var article = await _db.Articles.FirstOrDefaultAsync(a => a.Name == articleName);
+
+                if (article == null)
+                {
+                    article = new Article
+                    {
+                        Name = articleName,
+                        Category = item.Category.ToString(),
+                        ImageUrl = item.ImageUrl,
+                        MaterialsCostPerPiece = item.UnitPrice,
+                        DefaultSellingPrice = item.UnitPrice
+                    };
+
+                    _db.Articles.Add(article);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(article.ImageUrl) && !string.IsNullOrWhiteSpace(item.ImageUrl))
+                        article.ImageUrl = item.ImageUrl;
+
+                    if (article.DefaultSellingPrice == null || article.DefaultSellingPrice <= 0)
+                        article.DefaultSellingPrice = item.UnitPrice;
+                }
+
+                invoice.Lines.Add(new SalesInvoiceLine
+                {
+                    ArticleId = article.Id,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    Note = item.ComponentsSummary
+                });
+            }
+
+            invoice.Total = invoice.Lines.Sum(x => x.UnitPrice * x.Quantity);
+
+            _db.SalesInvoices.Add(invoice);
+            await _db.SaveChangesAsync();
+
+            TempData["Ok"] = $"Customer invoice {invoice.Number} was created successfully.";
+            return RedirectToAction(nameof(PrintSalesInvoice), new { id = invoice.Id });
         }
 
         private sealed class PatternRowDto

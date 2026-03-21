@@ -1,0 +1,121 @@
+﻿@model OneJevelsCompany.Web.Models.SalesInvoice
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Sales Invoice";
+}
+
+<div class="space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-[#6f5b3e]">Sales Invoice</h1>
+            <p class="text-sm text-gray-500 mt-1">Customer invoice preview.</p>
+        </div>
+
+        <div class="flex gap-3">
+            <button type="button"
+                    onclick="window.print()"
+                    class="inline-flex items-center rounded-lg bg-[#b08d57] px-4 py-2 text-sm font-medium text-white hover:bg-[#9a7743] transition">
+                Print
+            </button>
+
+            <a href="/Admin/SalesInvoices"
+               class="inline-flex items-center rounded-lg border border-[#e4d3b2] bg-white px-4 py-2 text-sm font-medium text-[#6f5b3e] hover:bg-[#f8f1e4] transition">
+                Back to Sales Invoices
+            </a>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-[#eadfcf] bg-white shadow-sm p-8 space-y-8">
+        <div class="flex items-start justify-between gap-6">
+            <div>
+                <h2 class="text-2xl font-bold text-[#6f5b3e]">One Jewellery Company</h2>
+                <p class="text-sm text-gray-500 mt-2">Customer Sales Invoice</p>
+            </div>
+
+            <div class="text-sm text-right text-gray-700 space-y-1">
+                <div><span class="font-semibold">Invoice No:</span> @Model.Number</div>
+                <div><span class="font-semibold">Issued:</span> @Model.IssuedOnUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+                <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500">Bill To</h3>
+                <div class="text-sm text-gray-700">
+                    <div>@(string.IsNullOrWhiteSpace(Model.CustomerName) ? "Customer" : Model.CustomerName)</div>
+                    @if (!string.IsNullOrWhiteSpace(Model.CustomerEmail))
+                    {
+                        <div>@Model.CustomerEmail</div>
+                    }
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500">Seller</h3>
+                <div class="text-sm text-gray-700">
+                    <div>One Jewellery Company</div>
+                    @if (!string.IsNullOrWhiteSpace(Model.SellerUserName))
+                    {
+                        <div>Issued by: @Model.SellerUserName</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left">
+                <thead class="bg-[#f7f2e8] text-[#5f513c]">
+                    <tr>
+                        <th class="px-5 py-4 font-semibold">Article</th>
+                        <th class="px-5 py-4 font-semibold">Category</th>
+                        <th class="px-5 py-4 font-semibold">Qty</th>
+                        <th class="px-5 py-4 font-semibold">Unit Price</th>
+                        <th class="px-5 py-4 font-semibold">Line Total</th>
+                        <th class="px-5 py-4 font-semibold">Note</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#eee4d6]">
+                    @foreach (var line in Model.Lines)
+                    {
+                        <tr class="hover:bg-[#fcfaf6] transition">
+                            <td class="px-5 py-4 text-gray-800 font-medium">@line.Article?.Name</td>
+                            <td class="px-5 py-4 text-gray-700">@line.Article?.Category</td>
+                            <td class="px-5 py-4 text-gray-700">@line.Quantity</td>
+                            <td class="px-5 py-4 text-gray-700">@line.UnitPrice.ToString("C")</td>
+                            <td class="px-5 py-4 font-medium text-[#5f513c]">@((line.Quantity * line.UnitPrice).ToString("C"))</td>
+                            <td class="px-5 py-4 text-gray-500">@line.Note</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="border-t-2 border-[#e4d3b2]">
+                        <td colspan="4"></td>
+                        <td class="px-5 py-5 text-lg font-bold text-[#6f5b3e]">@Model.Total.ToString("C")</td>
+                        <td class="px-5 py-5 text-sm text-gray-500">Total</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        @@media print {
+            header, aside, footer, .no-print {
+                display: none !important;
+            }
+
+            main, body, html {
+                background: white !important;
+            }
+
+            .max-w-\[1400px\] {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+    </style>
+}

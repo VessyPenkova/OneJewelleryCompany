@@ -38,6 +38,7 @@
                         <th class="px-5 py-4 font-semibold">Qty</th>
                         <th class="px-5 py-4 font-semibold">Total</th>
                         <th class="px-5 py-4 font-semibold">Status</th>
+                        <th class="px-5 py-4 font-semibold">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#eee4d6]">
@@ -79,6 +80,15 @@
                                 <span class="inline-flex rounded-full bg-[#efe2c8] px-3 py-1 text-xs font-medium text-[#6f5b3e]">
                                     @order.Status
                                 </span>
+                            </td>
+                            <td class="px-5 py-4">
+                                <form method="post" action="/Admin/Order/@order.Id/CreateCustomerInvoice">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="inline-flex items-center rounded-lg bg-[#b08d57] px-4 py-2 text-xs font-medium text-white hover:bg-[#9a7743] transition">
+                                        Create Invoice
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

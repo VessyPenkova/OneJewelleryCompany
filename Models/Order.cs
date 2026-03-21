@@ -6,6 +6,9 @@ namespace OneJevelsCompany.Web.Models
     {
         public int Id { get; set; }
 
+        [MaxLength(40)]
+        public string OrderType { get; set; } = "Jewelry";
+
         [MaxLength(160)]
         public string? CustomerEmail { get; set; }
 
@@ -16,8 +19,10 @@ namespace OneJevelsCompany.Web.Models
 
         public decimal Total { get; set; }
 
+        [MaxLength(40)]
         public string Status { get; set; } = "Pending";
 
+        [MaxLength(100)]
         public string? PaymentProviderId { get; set; }
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();

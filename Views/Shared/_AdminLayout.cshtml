@@ -22,7 +22,6 @@
 
 <body class="min-h-screen flex flex-col bg-[#f8f4ec] text-[#3b3b3b]">
 
-    <!-- Top bar -->
     <header class="h-16 bg-[#efe2c8] border-b border-[#e4d3b2] shadow-sm">
         <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-6">
 
@@ -58,10 +57,8 @@
         </div>
     </header>
 
-    <!-- Shell -->
     <div class="flex-1 flex min-h-[calc(100vh-4rem)]">
 
-        <!-- Sidebar -->
         <aside class="w-[250px] shrink-0 border-r border-[#e7dcc9] bg-[#fcfaf6]">
             <div class="px-5 py-6 text-sm space-y-6">
 
@@ -125,10 +122,21 @@
                     </div>
                 </div>
 
+                <div>
+                    <div class="text-[11px] uppercase tracking-[0.18em] text-gray-400 mb-3">Orders</div>
+                    <div class="space-y-1">
+                        <a href="/Admin/ItemOrders" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Item Orders
+                        </a>
+                        <a href="/Admin/JewelryOrders" class="block rounded-lg px-3 py-2 text-gray-700 hover:bg-[#f1e5cc] hover:text-[#7a623f] transition">
+                            Jewelry Orders
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
-        <!-- Main content -->
         <main class="flex-1 overflow-x-auto">
             <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
                 @RenderBody()
@@ -136,7 +144,6 @@
         </main>
     </div>
 
-    <!-- Footer -->
     <footer class="mt-auto border-t border-[#e4d3b2] bg-[#efe2c8] text-[#5f513c]">
         <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center text-sm">
             © @DateTime.UtcNow.Year One Jewellery Company — Crafted with

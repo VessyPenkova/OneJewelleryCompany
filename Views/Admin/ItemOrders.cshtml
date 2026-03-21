@@ -1,0 +1,89 @@
+﻿@model IEnumerable<OneJevelsCompany.Web.Models.Order>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Item Orders";
+}
+
+<div class="space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-[#6f5b3e]">Item Orders</h1>
+            <p class="text-sm text-gray-500 mt-1">Orders for single components like pearls, stones, and other items.</p>
+        </div>
+
+        <a href="/Admin/DesignOrders"
+           class="inline-flex items-center rounded-lg border border-[#e4d3b2] bg-white px-4 py-2 text-sm font-medium text-[#6f5b3e] hover:bg-[#f8f1e4] transition">
+            Pending Design Orders
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="rounded-2xl border border-dashed border-[#dccfb6] bg-white px-6 py-12 text-center text-gray-500 shadow-sm">
+            No item orders found.
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto rounded-2xl bg-white shadow-sm border border-[#eadfcf]">
+            <table class="min-w-full text-sm text-left">
+                <thead class="bg-[#f7f2e8] text-[#5f513c]">
+                    <tr>
+                        <th class="px-5 py-4 font-semibold">#</th>
+                        <th class="px-5 py-4 font-semibold">Preview</th>
+                        <th class="px-5 py-4 font-semibold">Created</th>
+                        <th class="px-5 py-4 font-semibold">Customer</th>
+                        <th class="px-5 py-4 font-semibold">Items</th>
+                        <th class="px-5 py-4 font-semibold">Qty</th>
+                        <th class="px-5 py-4 font-semibold">Total</th>
+                        <th class="px-5 py-4 font-semibold">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#eee4d6]">
+                    @foreach (var order in Model)
+                    {
+                        var totalQty = order.Items?.Sum(i => i.Quantity) ?? 0;
+                        var itemTitle = order.Items != null && order.Items.Any()
+                        ? string.Join(", ", order.Items.Select(i => i.Title).Take(3))
+                        : "No items";
+
+                        var imageUrl = order.Items?
+                        .Select(i => i.ImageUrl)
+                        .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+
+                        <tr class="hover:bg-[#fcfaf6] transition">
+                            <td class="px-5 py-4 font-medium text-[#6f5b3e]">#@order.Id</td>
+
+                            <td class="px-5 py-4">
+                                @if (!string.IsNullOrWhiteSpace(imageUrl))
+                                {
+                                    <img src="@imageUrl"
+                                         alt="@itemTitle"
+                                         class="h-14 w-14 rounded-lg object-cover border border-[#e5d7bf] bg-white" />
+                                }
+                                else
+                                {
+                                    <div class="h-14 w-14 rounded-lg border border-dashed border-[#dccfb6] bg-[#fcfaf6] flex items-center justify-center text-[11px] text-gray-400">
+                                        No image
+                                    </div>
+                                }
+                            </td>
+
+                            <td class="px-5 py-4 text-gray-700">@order.CreatedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="px-5 py-4 text-gray-700">@(string.IsNullOrWhiteSpace(order.CustomerEmail) ? "(guest)" : order.CustomerEmail)</td>
+                            <td class="px-5 py-4 text-gray-700">@itemTitle</td>
+                            <td class="px-5 py-4 text-gray-700">@totalQty</td>
+                            <td class="px-5 py-4 font-medium text-[#5f513c]">@order.Total.ToString("C")</td>
+                            <td class="px-5 py-4">
+                                <span class="inline-flex rounded-full bg-[#efe2c8] px-3 py-1 text-xs font-medium text-[#6f5b3e]">
+                                    @order.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -20,9 +20,18 @@ namespace OneJevelsCompany.Web.Services.Dashboard
             var since30Days = today.AddDays(-30);
             var trendStart = today.AddDays(-7 * 11);
 
-            var orders = await db.Orders.AsNoTracking().ToListAsync();
-            var orderItems = await db.OrderItems.AsNoTracking().ToListAsync();
-            var designOrders = await db.DesignOrders.AsNoTracking().ToListAsync();
+            var orders = await db.Orders
+                .AsNoTracking()
+                .Include(o => o.Items)
+                .ToListAsync();
+
+            var orderItems = await db.OrderItems
+                .AsNoTracking()
+                .ToListAsync();
+
+            var designOrders = await db.DesignOrders
+                .AsNoTracking()
+                .ToListAsync();
 
             var paidOrders = orders
                 .Where(o => o.Status == "Paid")
@@ -134,6 +143,67 @@ namespace OneJevelsCompany.Web.Services.Dashboard
                 })
                 .ToList();
 
+            var itemOrders = orders
+                .Where(o => string.Equals(o.OrderType, "Item", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(o => o.CreatedUtc)
+                .ToList();
+
+            var jewelryOrders = orders
+                .Where(o =>
+                    string.Equals(o.OrderType, "Jewelry", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(o.OrderType, "Mixed", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(o => o.CreatedUtc)
+                .ToList();
+
+            var recentItemOrders = itemOrders
+                .Take(5)
+                .Select(o => new DashboardOrderRowVm
+                {
+                    Id = o.Id,
+                    Type = o.OrderType,
+                    CustomerEmail = o.CustomerEmail ?? "(guest)",
+                    Total = o.Total,
+                    Status = o.Status,
+                    CreatedUtc = o.CreatedUtc,
+                    Title = o.Items.Any()
+                        ? string.Join(", ", o.Items.Select(i => i.Title).Take(2))
+                        : $"Order #{o.Id}"
+                })
+                .ToList();
+
+            var recentJewelryOrders = jewelryOrders
+                .Take(5)
+                .Select(o => new DashboardOrderRowVm
+                {
+                    Id = o.Id,
+                    Type = o.OrderType,
+                    CustomerEmail = o.CustomerEmail ?? "(guest)",
+                    Total = o.Total,
+                    Status = o.Status,
+                    CreatedUtc = o.CreatedUtc,
+                    Title = o.Items.Any()
+                        ? string.Join(", ", o.Items.Select(i => i.Title).Take(2))
+                        : $"Order #{o.Id}"
+                })
+                .ToList();
+
+            var recentDesignOrders = designOrders
+                .OrderByDescending(d => d.CreatedUtc)
+                .Take(5)
+                .Select(d => new DashboardOrderRowVm
+                {
+                    Id = d.Id,
+                    Type = "Design",
+                    CustomerEmail = d.CustomerEmail ?? "(guest)",
+                    Total = (d.UnitPriceEstimate ?? 0m) * Math.Max(1, d.Quantity),
+                    Status = d.Status ?? "Pending",
+                    CreatedUtc = d.CreatedUtc,
+                    Title = string.IsNullOrWhiteSpace(d.DesignName)
+                        ? $"Design #{d.Id}"
+                        : d.DesignName
+                })
+                .ToList();
+
             return new DashboardVm
             {
                 TotalSales = totalSales,
@@ -141,6 +211,12 @@ namespace OneJevelsCompany.Web.Services.Dashboard
                 NotInitiatedValue = notInitiated,
                 DelayedJobsValue = delayedVal,
                 JobsOnHoldValue = onHoldVal,
+                ItemOrdersCount = itemOrders.Count,
+                JewelryOrdersCount = jewelryOrders.Count,
+                DesignOrdersCount = designOrders.Count,
+                RecentItemOrders = recentItemOrders,
+                RecentJewelryOrders = recentJewelryOrders,
+                RecentDesignOrders = recentDesignOrders,
                 Variances = variances,
                 Customer = customer,
                 TrendLabels = labels,

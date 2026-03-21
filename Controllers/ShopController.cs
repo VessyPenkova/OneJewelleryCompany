@@ -120,10 +120,23 @@ namespace OneJevelsCompany.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Configure(OneJevelsCompany.Web.Models.ConfigureComponentVm form)
         {
-            if (!ModelState.IsValid) return View(form);
-
             var c = await _products.GetComponentAsync(form.Id);
             if (c is null) return NotFound();
+
+            form.DimensionOptions = (c.Dimensions ?? string.Empty)
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .DefaultIfEmpty("Стандарт")
+                .ToList();
+
+            form.MaxQty = Math.Max(0, c.QuantityOnHand);
+            form.Name = c.Name;
+            form.ImageUrl = c.ImageUrl ?? string.Empty;
+            form.Price = c.Price;
+
+            if (!ModelState.IsValid)
+            {
+                return View(form);
+            }
 
             var max = Math.Max(0, c.QuantityOnHand);
             if (max == 0)
@@ -136,7 +149,10 @@ namespace OneJevelsCompany.Web.Controllers
             if (form.Quantity < 1) form.Quantity = 1;
             if (form.Quantity > max) form.Quantity = max;
 
-            var dim = string.IsNullOrWhiteSpace(form.SelectedDimension) ? "Std" : form.SelectedDimension.Trim();
+            var dim = string.IsNullOrWhiteSpace(form.SelectedDimension)
+                ? "Std"
+                : form.SelectedDimension.Trim();
+
             var sku = $"COMP-{c.Id}-{dim}".ToUpperInvariant();
 
             _cart.AddToCart(HttpContext, new CartItem
@@ -149,6 +165,14 @@ namespace OneJevelsCompany.Web.Controllers
                 ComponentsSummary = $"Dimension: {dim}",
                 ComponentIdsCsv = c.Id.ToString()
             });
+
+            c.QuantityOnHand -= form.Quantity;
+            if (c.QuantityOnHand < 0)
+            {
+                c.QuantityOnHand = 0;
+            }
+
+            await _db.SaveChangesAsync();
 
             return RedirectToRoute(RouteNames.Cart.View);
         }

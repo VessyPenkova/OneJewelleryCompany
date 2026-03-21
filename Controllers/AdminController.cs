@@ -1,14 +1,13 @@
-﻿// Controllers/AdminController.cs
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OneJevelsCompany.Web.Data;
 using OneJevelsCompany.Web.Models;
 using OneJevelsCompany.Web.Models.Admin;
+using OneJevelsCompany.Web.Services.Common;
 using OneJevelsCompany.Web.Services.Dashboard;
 using OneJevelsCompany.Web.Services.Inventory;
-using OneJevelsCompany.Web.Services.Common;
 using System.Text.Json;
 
 namespace OneJevelsCompany.Web.Controllers
@@ -34,7 +33,6 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         // ====================== NESTED VMs (used by several views) ======================
-        // DO NOT RENAME: Views compile against OneJevelsCompany.Web.Controllers.AdminController.<Type>
 
         public class DesignOrderDetailsVm
         {
@@ -82,10 +80,8 @@ namespace OneJevelsCompany.Web.Controllers
             public DateTime LastUpdatedUtc { get; set; }
         }
 
-        // Landing -> Dashboard
         public IActionResult Index() => RedirectToAction(nameof(Dashboard));
 
-        // ===== Lists =====
         public async Task<IActionResult> Components()
         {
             var items = await _db.Components
@@ -94,6 +90,7 @@ namespace OneJevelsCompany.Web.Controllers
                 .ThenBy(c => c.Category!.Name)
                 .ThenBy(c => c.Name)
                 .ToListAsync();
+
             return View(items);
         }
 
@@ -109,10 +106,10 @@ namespace OneJevelsCompany.Web.Controllers
                 .OrderByDescending(i => i.IssuedOnUtc)
                 .Include(i => i.Lines)
                 .ToListAsync();
+
             return View(list);
         }
 
-        // ===== New Invoice (Purchasing) =====
         [HttpGet]
         public async Task<IActionResult> NewInvoice()
         {
@@ -159,7 +156,6 @@ namespace OneJevelsCompany.Web.Controllers
             return RedirectToAction(nameof(Invoices));
         }
 
-        // ===== Helpers for invoice selects =====
         private async Task FillSelectListsAsync()
         {
             ViewBag.Categories = await _db.ComponentCategories
@@ -201,7 +197,6 @@ namespace OneJevelsCompany.Web.Controllers
                 .ToListAsync();
         }
 
-        // ===== New / Edit Jewel =====
         [HttpGet]
         public IActionResult NewJewel()
             => View(new JewelEditViewModel { Category = JewelCategory.Necklace });
@@ -222,6 +217,7 @@ namespace OneJevelsCompany.Web.Controllers
                 QuantityOnHand = vm.QuantityOnHand,
                 ImageUrl = imageUrl
             };
+
             _db.Jewels.Add(j);
             await _db.SaveChangesAsync();
             return RedirectToAction(nameof(Jewels));
@@ -265,13 +261,13 @@ namespace OneJevelsCompany.Web.Controllers
             return RedirectToAction(nameof(Jewels));
         }
 
-        // ===== Design Orders =====
         [HttpGet("/Admin/DesignOrders")]
         public async Task<IActionResult> DesignOrders()
         {
             var orders = await _db.DesignOrders
                 .OrderByDescending(o => o.CreatedUtc)
                 .ToListAsync();
+
             return View("~/Views/Admin/DesignOrders.cshtml", orders);
         }
 
@@ -282,7 +278,34 @@ namespace OneJevelsCompany.Web.Controllers
                 .Where(o => o.Status == "Built")
                 .OrderByDescending(o => o.CreatedUtc)
                 .ToListAsync();
+
             return View("~/Views/Admin/ReadyDesignOrders.cshtml", orders);
+        }
+
+        // NEW
+        [HttpGet("/Admin/ItemOrders")]
+        public async Task<IActionResult> ItemOrders()
+        {
+            var orders = await _db.Orders
+                .Include(o => o.Items)
+                .Where(o => o.OrderType == "Item")
+                .OrderByDescending(o => o.CreatedUtc)
+                .ToListAsync();
+
+            return View("~/Views/Admin/ItemOrders.cshtml", orders);
+        }
+
+        // NEW
+        [HttpGet("/Admin/JewelryOrders")]
+        public async Task<IActionResult> JewelryOrders()
+        {
+            var orders = await _db.Orders
+                .Include(o => o.Items)
+                .Where(o => o.OrderType == "Jewelry" || o.OrderType == "Mixed")
+                .OrderByDescending(o => o.CreatedUtc)
+                .ToListAsync();
+
+            return View("~/Views/Admin/JewelryOrders.cshtml", orders);
         }
 
         private sealed class PatternRowDto
@@ -307,18 +330,17 @@ namespace OneJevelsCompany.Web.Controllers
             var vm = await BuildDesignOrderVmAsync(id);
             if (vm == null) return NotFound();
 
-            await LoadCompaniesAsync(); // for the Sell modal company <select>
+            await LoadCompaniesAsync();
             return View("~/Views/Admin/DesignOrderDetails.cshtml", vm);
         }
 
-        // Printer-friendly page used by the “Print protocol” button
         [HttpGet("/Admin/DesignOrder/{id:int}/Protocol")]
         public async Task<IActionResult> DesignOrderProtocol(int id)
         {
             var vm = await BuildDesignOrderVmAsync(id);
             if (vm == null) return NotFound();
 
-            await LoadCompaniesAsync(); // for the Sell modal on protocol page
+            await LoadCompaniesAsync();
             return View("~/Views/Admin/DesignOrderProtocol.cshtml", vm);
         }
 
@@ -334,7 +356,10 @@ namespace OneJevelsCompany.Web.Controllers
                     string.IsNullOrWhiteSpace(o.PatternJson) ? "[]" : o.PatternJson,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<PatternRowDto>();
             }
-            catch { rowsDto = new List<PatternRowDto>(); }
+            catch
+            {
+                rowsDto = new List<PatternRowDto>();
+            }
 
             var ids = rowsDto.Select(r => r.ComponentId).Distinct().ToList();
             var comps = await _db.Components
@@ -409,7 +434,10 @@ namespace OneJevelsCompany.Web.Controllers
                     string.IsNullOrWhiteSpace(o.PatternJson) ? "[]" : o.PatternJson,
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<PatternRowDto>();
             }
-            catch { rowsDto = new List<PatternRowDto>(); }
+            catch
+            {
+                rowsDto = new List<PatternRowDto>();
+            }
 
             var rows = rowsDto
                 .Select(r => (componentId: r.ComponentId, count: Math.Max(0, r.Count)))
@@ -498,7 +526,6 @@ namespace OneJevelsCompany.Web.Controllers
             return RedirectToAction(nameof(DesignOrder), new { id });
         }
 
-        // ===== Purchase Queue =====
         [HttpGet("/Admin/PurchaseQueue")]
         public async Task<IActionResult> PurchaseQueue()
         {
@@ -559,8 +586,9 @@ namespace OneJevelsCompany.Web.Controllers
                     MinOrderQtyUsed = moqSnapshot,
                     CreatedUtc = DateTime.UtcNow,
                     LastUpdatedUtc = DateTime.UtcNow,
-                    SourcesJson = JsonSerializer.Serialize(new[] {
-                        new NeedSource{ designOrderId = designOrderId, qty = addQty, createdUtc = DateTime.UtcNow }
+                    SourcesJson = JsonSerializer.Serialize(new[]
+                    {
+                        new NeedSource { designOrderId = designOrderId, qty = addQty, createdUtc = DateTime.UtcNow }
                     })
                 };
                 _db.PurchaseNeeds.Add(need);
@@ -572,14 +600,20 @@ namespace OneJevelsCompany.Web.Controllers
                 need.LastUpdatedUtc = DateTime.UtcNow;
 
                 List<NeedSource> list;
-                try { list = JsonSerializer.Deserialize<List<NeedSource>>(need.SourcesJson ?? "[]") ?? new(); }
-                catch { list = new(); }
+                try
+                {
+                    list = JsonSerializer.Deserialize<List<NeedSource>>(need.SourcesJson ?? "[]") ?? new();
+                }
+                catch
+                {
+                    list = new();
+                }
+
                 list.Add(new NeedSource { designOrderId = designOrderId, qty = addQty, createdUtc = DateTime.UtcNow });
                 need.SourcesJson = JsonSerializer.Serialize(list);
             }
         }
 
-        // ===== Dashboard =====
         [HttpGet("/Admin/Dashboard")]
         public async Task<IActionResult> Dashboard()
         {
@@ -587,36 +621,32 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Admin/Dashboard.cshtml", vm);
         }
 
-        // ====================== SALES (NEW) ======================
-
-        // List of sales invoices (separate from purchasing invoices)
         [HttpGet("/Admin/SalesInvoices")]
         public async Task<IActionResult> SalesInvoices()
         {
             var list = await _db.SalesInvoices
                 .OrderByDescending(i => i.IssuedOnUtc)
                 .Include(i => i.Company)
-                .Include(i => i.Lines).ThenInclude(l => l.Article)
+                .Include(i => i.Lines)
+                .ThenInclude(l => l.Article)
                 .ToListAsync();
 
             return View("~/Views/Admin/SalesInvoices.cshtml", list);
         }
 
-        // Printable sales invoice
         [HttpGet("/Admin/SalesInvoice/{id:int}/Print")]
         public async Task<IActionResult> PrintSalesInvoice(int id)
         {
             var inv = await _db.SalesInvoices
                 .Include(i => i.Company)
-                .Include(i => i.Lines).ThenInclude(l => l.Article)
+                .Include(i => i.Lines)
+                .ThenInclude(l => l.Article)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (inv == null) return NotFound();
             return View("~/Views/Admin/SalesInvoicePrint.cshtml", inv);
         }
 
-        // Create a sales invoice from a Built protocol.
-        // Invoice lines: Article + Qty + UnitPrice. Components are NOT shown here (stock already consumed at BUILD).
         [HttpPost("/Admin/DesignOrder/{id:int}/Sell")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SellBuiltDesign(
@@ -634,7 +664,6 @@ namespace OneJevelsCompany.Web.Controllers
                 return RedirectToAction(nameof(DesignOrder), new { id });
             }
 
-            // Ensure/lookup Article created from protocol (sellable ready product)
             var articleName = !string.IsNullOrWhiteSpace(o.DesignName) ? o.DesignName! : $"Custom #{o.Id}";
             var article = await _db.Articles.FirstOrDefaultAsync(a => a.Name == articleName);
             if (article == null)
@@ -650,7 +679,6 @@ namespace OneJevelsCompany.Web.Controllers
                 await _db.SaveChangesAsync();
             }
 
-            // Price = materials × (1 + markup%)
             var unitPrice = decimal.Round(article.MaterialsCostPerPiece * (1 + (profitPercent / 100m)), 2);
             qty = Math.Max(1, qty);
 
@@ -659,10 +687,10 @@ namespace OneJevelsCompany.Web.Controllers
                 Number = $"S-{DateTime.UtcNow:yyyyMMddHHmmss}",
                 IssuedOnUtc = DateTime.UtcNow,
                 CompanyId = companyId,
-                CustomerName = o.CustomerName,     // keep free-text fallback
+                CustomerName = o.CustomerName,
                 CustomerEmail = o.CustomerEmail,
                 SellerUserName = User?.Identity?.Name ?? "admin",
-                ProfitPercent = profitPercent,     // internal only
+                ProfitPercent = profitPercent,
                 SourceDesignOrderId = o.Id
             };
 
@@ -677,7 +705,6 @@ namespace OneJevelsCompany.Web.Controllers
 
             _db.SalesInvoices.Add(inv);
 
-            // Mark order as sold (components already reduced at BUILD)
             o.SalesInvoiceId = inv.Id;
             o.SoldQty = qty;
             o.SoldOnUtc = DateTime.UtcNow;
@@ -689,7 +716,6 @@ namespace OneJevelsCompany.Web.Controllers
             return RedirectToAction(nameof(PrintSalesInvoice), new { id = inv.Id });
         }
 
-        // Load companies for selection in protocol/design order pages
         private async Task LoadCompaniesAsync()
         {
             ViewBag.Companies = await _db.Companies

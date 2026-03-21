@@ -7,7 +7,6 @@ using OneJevelsCompany.Web.Models.Manufacturing;
 using OneJevelsCompany.Web.Routing;
 using OneJevelsCompany.Web.Services.Cart;
 using OneJevelsCompany.Web.Services.Product;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace OneJevelsCompany.Web.Controllers
@@ -102,7 +101,7 @@ namespace OneJevelsCompany.Web.Controllers
                 .DefaultIfEmpty("Стандарт")
                 .ToList();
 
-            var vm = new ConfigureComponentVm
+            var vm = new OneJevelsCompany.Web.Models.ConfigureComponentVm
             {
                 Id = c.Id,
                 Name = c.Name,
@@ -119,7 +118,7 @@ namespace OneJevelsCompany.Web.Controllers
         [HttpPost("/Shop/Configure", Name = RouteNames.Shop.ConfigurePost)]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Configure(ConfigureComponentVm form)
+        public async Task<IActionResult> Configure(OneJevelsCompany.Web.Models.ConfigureComponentVm form)
         {
             if (!ModelState.IsValid) return View(form);
 
@@ -483,21 +482,6 @@ namespace OneJevelsCompany.Web.Controllers
             public string? SizeLabel { get; set; }
             public string? Dimensions { get; set; }
             public string? Description { get; set; }
-        }
-
-        public class ConfigureComponentVm
-        {
-            public int Id { get; set; }
-            public string Name { get; set; } = "";
-            public string? ImageUrl { get; set; }
-            public decimal Price { get; set; }
-            public List<string> DimensionOptions { get; set; } = new();
-            public string? SelectedDimension { get; set; }
-
-            [Range(1, 9999)]
-            public int Quantity { get; set; } = 1;
-
-            public int MaxQty { get; set; } = 1;
         }
     }
 }

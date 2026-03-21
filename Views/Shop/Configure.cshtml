@@ -4,7 +4,7 @@
     ViewData["Title"] = "Поръчай " + Model.Name;
 }
 
-<form asp-action="Configure" method="post" class="max-w-3xl mx-auto bg-amber-50 p-6 rounded-2xl shadow space-y-6">
+<form action="/Shop/Configure" method="post" class="max-w-3xl mx-auto bg-amber-50 p-6 rounded-2xl shadow space-y-6">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
 
@@ -22,8 +22,16 @@
             @foreach (var d in Model.DimensionOptions)
             {
                 var id = "dim-" + d.Replace(" ", "").Replace("x", "x");
-                <input type="radio" class="hidden peer" name="SelectedDimension" id="@id" value="@d" @(d == Model.DimensionOptions.First() ? "checked" : "") />
-                <label for="@id" class="px-4 py-2 rounded-lg border bg-white peer-checked:ring-2 peer-checked:ring-amber-400 cursor-pointer">@d</label>
+                <input type="radio"
+                       class="hidden peer"
+                       name="SelectedDimension"
+                       id="@id"
+                       value="@d"
+                       @(d == Model.DimensionOptions.First() ? "checked" : "") />
+                <label for="@id"
+                       class="px-4 py-2 rounded-lg border bg-white peer-checked:ring-2 peer-checked:ring-amber-400 cursor-pointer">
+                    @d
+                </label>
             }
         </div>
         <span asp-validation-for="SelectedDimension" class="text-red-600 text-sm"></span>
@@ -49,6 +57,8 @@
         <button type="submit" class="px-6 py-3 rounded-lg bg-amber-600 text-white hover:bg-amber-500">
             Поръчай
         </button>
-        <a asp-action="Details" asp-route-id="@Model.Id" class="px-6 py-3 rounded-lg border">Разгледай</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="px-6 py-3 rounded-lg border">
+            Разгледай
+        </a>
     </div>
 </form>

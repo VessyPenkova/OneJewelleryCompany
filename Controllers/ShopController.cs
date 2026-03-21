@@ -484,6 +484,17 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Shop/DesignSubmitted.cshtml", id);
         }
 
+        [HttpGet("/Shop/Rings")]
+        public async Task<IActionResult> Rings()
+        {
+            var rings = await _db.Jewels
+                .Where(j => j.Category == JewelCategory.Ring)
+                .OrderBy(j => j.Name)
+                .ToListAsync();
+
+            return View("JewelryByCategory", rings);
+        }
+
         // ========== View Models ==========
 
         public class DesignGalleryItem

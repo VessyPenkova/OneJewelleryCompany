@@ -2,8 +2,9 @@
 {
     public enum JewelCategory
     {
-        Bracelet = 1,
-        Necklace = 2
+        Bracelet,
+        Necklace,
+        Earrings,
+        Ring 
     }
-
 }

@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
+using Qase.Csharp.Commons.Attributes;
 
 namespace OneJewelsCompany.PlaywrightTests
 {
@@ -16,12 +17,10 @@ namespace OneJewelsCompany.PlaywrightTests
         {
             await Page.GotoAsync(BaseUrl);
 
-            await Expect(
-                Page.GetByText("Welcome to One Jewellery Company"))
+            await Expect(Page.GetByText("Welcome to One Jewellery Company"))
                 .ToBeVisibleAsync();
 
-            await Expect(
-                Page.GetByText("Explore Collections"))
+            await Expect(Page.GetByText("Explore Collections"))
                 .ToBeVisibleAsync();
         }
 

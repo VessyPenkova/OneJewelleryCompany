@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OneJevelsCompany.Web.Data;
@@ -28,6 +28,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Update(string sku, int qty)
         {
             _cart.UpdateQuantity(HttpContext, sku, qty);
@@ -35,6 +36,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Remove(string sku)
         {
             _cart.Remove(HttpContext, sku);
@@ -42,6 +44,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Clear()
         {
             _cart.Clear(HttpContext);
@@ -93,9 +96,9 @@ namespace OneJevelsCompany.Web.Controllers
                                  .Where(c => ids.Contains(c.Id))
                                  .ToListAsync();
 
-            if (!comps.Any())
+            if (comps.Count != ids.Distinct().Count())
             {
-                TempData["Err"] = "Selected components not found.";
+                TempData["Err"] = "One or more selected components no longer exist.";
                 return RedirectToAction("Build", "Shop");
             }
 
@@ -123,7 +126,9 @@ namespace OneJevelsCompany.Web.Controllers
                 Quantity = Quantity,        // number of finished pieces ordered
                 UnitPrice = unitPrice,      // price per finished piece
                 ComponentsSummary = summary,
-                ComponentIdsCsv = csv       // fallback encoding your current InventoryService understands
+                ComponentIdsCsv = csv,      // fallback encoding your current InventoryService understands
+                IsCustomBuild = true,
+                CustomDesignName = string.IsNullOrWhiteSpace(DesignName) ? "Custom" : DesignName.Trim()
             };
 
             _cart.AddToCart(HttpContext, item);

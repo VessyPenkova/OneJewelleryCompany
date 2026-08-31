@@ -1,205 +1,222 @@
 ﻿@model IEnumerable<OneJevelsCompany.Web.Models.Component>
 @using OneJevelsCompany.Web.Models
 @{
-    ViewData["Title"] = "Build Your Own Jewelry";
+    ViewData["Title"] = "Build Your Own Jewellery";
     var category = (JewelCategory)ViewBag.Category;
+    var pieceName = category.ToString();
+    var pieceNameLower = pieceName.ToLowerInvariant();
 }
 
-<!-- Hero with your background image -->
-<div class="relative max-w-5xl mx-auto mb-6 rounded-2xl overflow-hidden">
-    <img src="~/Images/MainBackground.png" asp-append-version="true"
-         alt="Background" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-white/55 backdrop-blur-[1px]"></div>
-
-    <div class="relative p-5 flex items-center justify-between">
-        <div>
-            <div class="text-sm text-gray-600">Build your own</div>
-            <h1 class="text-2xl font-bold text-amber-700">@category.ToString()</h1>
-            <p class="text-gray-700 mt-1">Pick parts, set per-piece quantities, add labor, and we’ll craft it.</p>
+<div class="max-w-6xl mx-auto space-y-6">
+    <!-- Clear introduction: intentionally no portrait/background image -->
+    <section class="rounded-2xl border border-amber-200 bg-white overflow-hidden shadow-sm">
+        <div class="px-6 py-7 md:px-9 md:py-9">
+            <div class="text-xs uppercase tracking-[0.24em] text-amber-700 font-semibold">Your jewellery, your design</div>
+            <div class="mt-2 grid lg:grid-cols-[1fr_auto] gap-7 items-end">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-semibold text-gray-900">Build Your Own Jewellery</h1>
+                    <p class="mt-3 max-w-2xl text-gray-600 leading-7">
+                        Choose the type of jewellery, select the components you want in one piece, and see the estimated price as you build.
+                    </p>
+                </div>
+                <a asp-controller="Shop" asp-action="Design"
+                   class="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-5 py-3 text-white font-medium hover:bg-gray-800 transition">
+                    <span aria-hidden="true">◇</span>
+                    Open 3D Design Studio
+                </a>
+            </div>
         </div>
 
-        <!-- Type tiles -->
-        <div class="flex gap-3">
+        <div class="border-t bg-amber-50/50 px-6 py-4 md:px-9">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                <div class="flex items-center gap-2"><span class="grid h-7 w-7 place-items-center rounded-full bg-amber-700 text-white text-xs font-semibold">1</span><span class="font-medium">Choose type</span></div>
+                <div class="flex items-center gap-2"><span class="grid h-7 w-7 place-items-center rounded-full bg-amber-700 text-white text-xs font-semibold">2</span><span class="font-medium">Choose parts</span></div>
+                <div class="flex items-center gap-2"><span class="grid h-7 w-7 place-items-center rounded-full bg-amber-700 text-white text-xs font-semibold">3</span><span class="font-medium">Review price</span></div>
+                <div class="flex items-center gap-2"><span class="grid h-7 w-7 place-items-center rounded-full bg-amber-700 text-white text-xs font-semibold">4</span><span class="font-medium">Add to cart</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Step 1 -->
+    <section class="bg-white rounded-2xl border shadow-sm p-6 md:p-7">
+        <div class="flex items-start justify-between gap-4 mb-5">
+            <div>
+                <div class="text-xs uppercase tracking-wider text-amber-700 font-semibold">Step 1</div>
+                <h2 class="text-xl font-semibold text-gray-900 mt-1">What would you like to create?</h2>
+                <p class="text-sm text-gray-600 mt-1">Choose a jewellery type. Your component choices will appear below.</p>
+            </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 max-w-2xl">
             <a href="/Shop/Build?category=Necklace"
-               class="group w-36 p-3 rounded-xl border bg-white/80 hover:border-amber-400 transition @(category == JewelCategory.Necklace ? "ring-2 ring-amber-300" : "")">
-                <div class="aspect-[4/3] rounded-lg overflow-hidden bg-amber-50 flex items-center justify-center">
-                    <img src="~/Images/MainBackground.png" asp-append-version="true"
-                         alt="Necklace" class="w-full h-full object-cover opacity-70" />
+               class="rounded-xl border-2 p-5 transition @(category == JewelCategory.Necklace ? "border-amber-600 bg-amber-50" : "border-gray-200 hover:border-amber-300")">
+                <div class="flex items-center gap-4">
+                    <div class="grid h-12 w-12 place-items-center rounded-full border border-amber-300 bg-white text-2xl text-amber-700">○</div>
+                    <div>
+                        <div class="font-semibold text-lg text-gray-900">Necklace</div>
+                        <div class="text-sm text-gray-500">Build from chains, clasps, pendants and available parts.</div>
+                    </div>
+                    @if (category == JewelCategory.Necklace)
+                    {
+                        <span class="ml-auto text-amber-700 font-semibold">Selected</span>
+                    }
                 </div>
-                <div class="mt-2 text-center font-medium">Necklace</div>
             </a>
 
             <a href="/Shop/Build?category=Bracelet"
-               class="group w-36 p-3 rounded-xl border bg-white/80 hover:border-amber-400 transition @(category == JewelCategory.Bracelet ? "ring-2 ring-amber-300" : "")">
-                <div class="aspect-[4/3] rounded-lg overflow-hidden bg-amber-50 flex items-center justify-center">
-                    <img src="~/Images/MainBackground.png" asp-append-version="true"
-                         alt="Bracelet" class="w-full h-full object-cover opacity-70" />
-                </div>
-                <div class="mt-2 text-center font-medium">Bracelet</div>
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- NEW: quick link to sequence-based Design Studio -->
-<!-- Keep your wrapper if you like -->
-<div class="max-w-5xl mx-auto -mt-2 mb-4 flex justify-end">
-    <a asp-controller="Shop" asp-action="Design"
-       class="px-4 py-2 rounded bg-amber-600 text-white hover:bg-amber-500">
-        Design Studio (sequence preview)
-    </a>
-</div>
-
-
-<form asp-controller="Cart" asp-action="AddCustomRecipe" method="post"
-      class="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow space-y-6">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="Category" value="@((int)category)" />
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-            <label class="block text-sm font-medium mb-1">Design name</label>
-            <input name="DesignName" maxlength="80" class="w-full border rounded p-2"
-                   placeholder="Customer’s design name" />
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Labor per piece</label>
-            <input name="LaborPerPiece" type="number" step="0.01" min="0" value="10.00"
-                   class="w-full border rounded p-2" />
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Finished quantity</label>
-            <input name="Quantity" type="number" min="1" value="1" class="w-full border rounded p-2" />
-        </div>
-        <div>
-            <label class="block text-sm font-medium mb-1">Unit price (est.)</label>
-            <input id="unitPrice" type="text" readonly class="w-full border rounded p-2 bg-gray-50" value="$0.00" />
-        </div>
-    </div>
-
-    <p class="text-gray-600">Set quantities for each component <b>per finished @category.ToString().ToLower()</b>. Leave 0 to exclude.</p>
-
-    @foreach (var group in Model
-        .GroupBy(c => new { Name = c.Category?.Name ?? "Other", Order = c.Category?.SortOrder ?? 999 })
-        .OrderBy(g => g.Key.Order))
-    {
-        <h3 class="text-lg font-semibold mt-6 mb-2 text-amber-700">@group.Key.Name</h3>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach (var c in group.OrderBy(x => x.Name))
-            {
-                var outOfStock = c.QuantityOnHand <= 0;
-                <div class="group relative border rounded-xl overflow-hidden bg-white hover:shadow-md transition @(outOfStock ? "opacity-60" : "")">
-                    <div class="flex gap-3 p-3">
-                        <div class="shrink-0">
-                            @if (!string.IsNullOrWhiteSpace(c.ImageUrl))
-                            {
-                                <img src="@c.ImageUrl" alt="@c.Name"
-                                     class="w-16 h-16 rounded-lg object-cover ring-1 ring-gray-200" />
-                            }
-                            else
-                            {
-                                <img src="~/Images/MainBackground.png" asp-append-version="true"
-                                     alt="placeholder" class="w-16 h-16 rounded-lg object-cover ring-1 ring-gray-200 opacity-70" />
-                            }
-                        </div>
-
-                        <div class="flex-1 min-w-0">
-                            <div class="font-medium truncate" title="@c.Name">@c.Name</div>
-                            <div class="text-xs text-gray-600">
-                                @if (!string.IsNullOrEmpty(c.Color))
-                                {
-                                    <text>@c.Color · </text>
-                                }
-                                @if (!string.IsNullOrEmpty(c.SizeLabel))
-                                {
-                                    <text>@c.SizeLabel · </text>
-                                }
-                                @if (!string.IsNullOrEmpty(c.Dimensions))
-                                {
-                                    <text>@c.Dimensions · </text>
-                                }
-                                Price: @c.Price.ToString("C") · Stock: @c.QuantityOnHand
-                            </div>
-
-                            <div class="mt-2">
-                                <label class="block text-xs text-gray-600">Qty per piece</label>
-                                <div class="flex items-center gap-2">
-                                    <button type="button" class="px-2 py-1 border rounded text-gray-700 step-btn" data-dir="-1" data-for="qty-@c.Id">−</button>
-                                    <input id="qty-@c.Id" type="number" min="0" value="0"
-                                           name="Components[@c.Id].Quantity"
-                                           data-price="@c.Price"
-                                           class="w-20 border rounded p-2 qty-input"
-                                           @(outOfStock ? "disabled" : "") />
-                                    <button type="button" class="px-2 py-1 border rounded text-gray-700 step-btn" data-dir="1" data-for="qty-@c.Id">+</button>
-                                </div>
-                            </div>
-                        </div>
+               class="rounded-xl border-2 p-5 transition @(category == JewelCategory.Bracelet ? "border-amber-600 bg-amber-50" : "border-gray-200 hover:border-amber-300")">
+                <div class="flex items-center gap-4">
+                    <div class="grid h-12 w-12 place-items-center rounded-full border border-amber-300 bg-white text-2xl text-amber-700">◌</div>
+                    <div>
+                        <div class="font-semibold text-lg text-gray-900">Bracelet</div>
+                        <div class="text-sm text-gray-500">Combine available components into your own bracelet.</div>
                     </div>
-
-                    <!-- per-component actions -->
-                    <div class="px-3 pb-3 flex gap-2">
-                        <a asp-controller="Shop" asp-action="Details" asp-route-id="@c.Id"
-                           class="flex-1 text-center px-4 py-2 rounded-lg border hover:bg-gray-50">
-                            Разгледай
-                        </a>
-
-                        @if (!outOfStock)
-                        {
-                            <a asp-controller="Shop" asp-action="Configure" asp-route-id="@c.Id"
-                               class="flex-1 text-center px-4 py-2 rounded-lg bg-amber-600 text-white hover:bg-amber-500">
-                                Поръчай
-                            </a>
-                        }
-                        else
-                        {
-                            <button type="button" disabled
-                                    class="flex-1 text-center px-4 py-2 rounded-lg bg-gray-200 text-gray-500 cursor-not-allowed">
-                                Поръчай
-                            </button>
-                        }
-                    </div>
-
-                    @if (outOfStock)
+                    @if (category == JewelCategory.Bracelet)
                     {
-                        <div class="absolute inset-0 bg-white/60 grid place-content-center text-red-600 font-semibold">
-                            Out of stock
-                        </div>
+                        <span class="ml-auto text-amber-700 font-semibold">Selected</span>
                     }
                 </div>
-            }
+            </a>
         </div>
-    }
+    </section>
 
-    <!-- selected preview -->
-    <div class="mt-6">
-        <div class="text-sm font-semibold text-gray-700 mb-2">Selected components (per piece)</div>
-        <div id="preview" class="flex flex-wrap gap-2"></div>
-    </div>
+    <form asp-controller="Cart" asp-action="AddCustomRecipe" method="post" class="space-y-6">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Category" value="@((int)category)" />
 
-    <div class="mt-4 flex items-center gap-3">
-        <button id="btnProceed" class="px-5 py-3 rounded-lg bg-amber-600 text-white hover:bg-amber-500">
-            Proceed to order
-        </button>
-        <span id="submitMsg" class="text-sm text-gray-600"></span>
-    </div>
+        <!-- Step 2 -->
+        <section class="bg-white rounded-2xl border shadow-sm p-6 md:p-7">
+            <div class="mb-6">
+                <div class="text-xs uppercase tracking-wider text-amber-700 font-semibold">Step 2</div>
+                <h2 class="text-xl font-semibold text-gray-900 mt-1">Build your @pieceNameLower</h2>
+                <p class="text-sm text-gray-600 mt-1">
+                    Use + and − to choose how many of each component are used in <strong>one @pieceNameLower</strong>. Leave a component at 0 if you do not want to use it.
+                </p>
+            </div>
 
-    <!-- tiny inline form that appears on click -->
-    <div id="orderForm" class="hidden mt-3 grid sm:grid-cols-3 gap-3">
-        <input id="cName" class="border rounded p-2" placeholder="Your name (optional)" />
-        <input id="cEmail" class="border rounded p-2" placeholder="Email (optional)" />
-        <input id="cPhone" class="border rounded p-2" placeholder="Phone (optional)" />
-        <input id="qty" type="number" min="1" value="1" class="border rounded p-2 sm:col-span-1" placeholder="Quantity" />
-        <button id="btnSend" class="px-5 py-2 rounded bg-amber-600 text-white hover:bg-amber-500 sm:col-span-2">Send design to admin</button>
-    </div>
+            @foreach (var group in Model
+                .GroupBy(c => new { Name = c.Category?.Name ?? "Other", Order = c.Category?.SortOrder ?? 999 })
+                .OrderBy(g => g.Key.Order))
+            {
+                <div class="mb-7 last:mb-0">
+                    <div class="flex items-center gap-3 mb-3">
+                        <h3 class="text-base font-semibold text-gray-900">@group.Key.Name</h3>
+                        <div class="h-px flex-1 bg-gray-200"></div>
+                    </div>
 
-    <div class="flex gap-3 pt-2">
-        <button type="submit" class="bg-amber-600 text-white px-6 py-3 rounded-lg hover:bg-amber-500 transition">
-            Add to Cart
-        </button>
-        <a asp-controller="Shop" asp-action="Collections" class="px-6 py-3 rounded-lg border">Cancel</a>
-    </div>
-</form>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        @foreach (var c in group.OrderBy(x => x.Name))
+                        {
+                            var outOfStock = c.QuantityOnHand <= 0;
+                            <article class="component-card relative rounded-xl border bg-white p-4 transition hover:shadow-md @(outOfStock ? "opacity-60" : "")">
+                                <div class="flex gap-3">
+                                    <div class="h-16 w-16 shrink-0 rounded-lg border bg-gray-50 overflow-hidden grid place-items-center">
+                                        @if (!string.IsNullOrWhiteSpace(c.ImageUrl))
+                                        {
+                                            <img src="@c.ImageUrl" alt="@c.Name" class="h-full w-full object-contain" />
+                                        }
+                                        else
+                                        {
+                                            <span class="text-2xl text-amber-700" aria-hidden="true">◇</span>
+                                        }
+                                    </div>
+
+                                    <div class="min-w-0 flex-1">
+                                        <div class="component-name font-semibold text-gray-900 leading-5" title="@c.Name">@c.Name</div>
+                                        <div class="mt-1 text-xs leading-5 text-gray-500">
+                                            @if (!string.IsNullOrEmpty(c.Color)) { <span>@c.Color · </span> }
+                                            @if (!string.IsNullOrEmpty(c.SizeLabel)) { <span>@c.SizeLabel · </span> }
+                                            @if (!string.IsNullOrEmpty(c.Dimensions)) { <span>@c.Dimensions · </span> }
+                                            <span>@c.Price.ToString("C")</span>
+                                        </div>
+                                        <div class="text-xs @(outOfStock ? "text-red-600" : "text-gray-500")">
+                                            @(outOfStock ? "Out of stock" : $"{c.QuantityOnHand} available")
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 flex items-end justify-between gap-3">
+                                    <div>
+                                        <label for="qty-@c.Id" class="block text-xs font-medium text-gray-600 mb-1">Quantity in one piece</label>
+                                        <div class="flex items-center gap-2">
+                                            <button type="button" class="step-btn h-9 w-9 rounded-lg border text-gray-700 hover:bg-gray-50" data-dir="-1" data-for="qty-@c.Id" aria-label="Decrease @c.Name">−</button>
+                                            <input id="qty-@c.Id" type="number" min="0" value="0"
+                                                   name="Components[@c.Id].Quantity" data-price="@c.Price"
+                                                   class="qty-input h-9 w-16 rounded-lg border text-center"
+                                                   @(outOfStock ? "disabled" : "") />
+                                            <button type="button" class="step-btn h-9 w-9 rounded-lg border text-gray-700 hover:bg-gray-50" data-dir="1" data-for="qty-@c.Id" aria-label="Increase @c.Name">+</button>
+                                        </div>
+                                    </div>
+                                    <a asp-controller="Shop" asp-action="Details" asp-route-id="@c.Id" class="text-sm text-amber-800 hover:underline">Details</a>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                </div>
+            }
+        </section>
+
+        <!-- Step 3 -->
+        <section class="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+            <div class="bg-white rounded-2xl border shadow-sm p-6 md:p-7">
+                <div class="text-xs uppercase tracking-wider text-amber-700 font-semibold">Step 3</div>
+                <h2 class="text-xl font-semibold text-gray-900 mt-1">Name and review your design</h2>
+                <p class="text-sm text-gray-600 mt-1 mb-5">Give your design a name and check the selected components before adding it to your cart.</p>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Design name</label>
+                        <input name="DesignName" maxlength="80" class="w-full border rounded-lg p-2.5" placeholder="e.g. Golden Evening" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Finished quantity</label>
+                        <input name="Quantity" type="number" min="1" value="1" class="w-full border rounded-lg p-2.5" />
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <div class="text-sm font-semibold text-gray-700 mb-2">Your selected components</div>
+                    <div id="preview" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <aside class="bg-gray-900 text-white rounded-2xl shadow-sm p-6 lg:sticky lg:top-24">
+                <div class="text-xs uppercase tracking-wider text-amber-200 font-semibold">Design summary</div>
+                <div class="mt-4">
+                    <div class="text-sm text-gray-300">Creating</div>
+                    <div class="text-xl font-semibold">@pieceName</div>
+                </div>
+
+                <div class="mt-5 border-t border-white/15 pt-5">
+                    <label class="block text-sm text-gray-300 mb-1">Crafting / labor per piece</label>
+                    <input name="LaborPerPiece" type="number" step="0.01" min="0" value="10.00"
+                           class="w-full rounded-lg border border-white/20 bg-white/10 p-2.5 text-white" />
+                </div>
+
+                <div class="mt-5 border-t border-white/15 pt-5 flex items-end justify-between gap-4">
+                    <div>
+                        <div class="text-sm text-gray-300">Estimated unit price</div>
+                        <div class="text-xs text-gray-400 mt-1">Components + crafting</div>
+                    </div>
+                    <input id="unitPrice" type="text" readonly class="w-32 bg-transparent text-right text-2xl font-semibold text-amber-200 outline-none" value="$0.00" />
+                </div>
+
+                <button type="submit" class="mt-6 w-full rounded-xl bg-amber-600 px-6 py-3.5 font-semibold text-white hover:bg-amber-500 transition">
+                    Add My Design to Cart
+                </button>
+                <a asp-controller="Shop" asp-action="Collections" class="mt-3 block text-center text-sm text-gray-300 hover:text-white">Cancel and return to collections</a>
+            </aside>
+        </section>
+    </form>
+
+    <section class="rounded-2xl border border-amber-200 bg-amber-50/60 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="font-semibold text-gray-900">Want to arrange your design visually?</div>
+            <div class="text-sm text-gray-600 mt-1">The existing 3D Design Studio is still available with its sequence and preview tools.</div>
+        </div>
+        <a asp-controller="Shop" asp-action="Design" class="shrink-0 rounded-lg border border-amber-600 px-4 py-2 text-amber-800 font-medium hover:bg-amber-100">Open 3D Preview</a>
+    </section>
+</div>
 
 @section Scripts {
     <script>
@@ -212,14 +229,16 @@
                 const p = parseFloat(inp.dataset.price || '0');
                 if (!isNaN(q) && !isNaN(p) && q > 0) {
                     materials += q * p;
-                    const name = inp.closest('.group').querySelector('.font-medium').textContent.trim();
+                    const card = inp.closest('.component-card');
+                    const name = card ? card.querySelector('.component-name').textContent.trim() : 'Component';
                     chips.push(`${q}× ${name}`);
                 }
             });
-            const labor = parseFloat(document.querySelector('input[name=LaborPerPiece]').value || '0');
+
+            const laborInput = document.querySelector('input[name=LaborPerPiece]');
+            const labor = parseFloat(laborInput ? laborInput.value || '0' : '0');
             const unit = materials + (isNaN(labor) ? 0 : labor);
-            document.getElementById('unitPrice').value =
-                unit.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
+            document.getElementById('unitPrice').value = unit.toLocaleString(undefined, { style: 'currency', currency: 'USD' });
 
             const prev = document.getElementById('preview');
             prev.innerHTML = '';
@@ -230,37 +249,32 @@
                 prev.appendChild(span);
             });
             if (chips.length === 0) {
-                prev.innerHTML = '<span class="text-xs text-gray-500">No components selected yet.</span>';
+                prev.innerHTML = '<span class="text-sm text-gray-500">Nothing selected yet. Choose components in Step 2.</span>';
             }
         }
 
         document.addEventListener('click', (e) => {
             const b = e.target.closest('.step-btn');
             if (!b) return;
-            const id = b.dataset.for;
-            const dir = parseInt(b.dataset.dir, 10);
-            const inp = document.getElementById(id);
+            const inp = document.getElementById(b.dataset.for);
             if (!inp || inp.disabled) return;
             const cur = parseInt(inp.value || '0', 10);
-            const next = Math.max(0, cur + dir);
-            inp.value = next;
+            inp.value = Math.max(0, cur + parseInt(b.dataset.dir, 10));
             recalcUnitPrice();
         });
 
         document.addEventListener('input', (e) => {
-            if (e.target.classList.contains('qty-input') || e.target.name === 'LaborPerPiece') {
-                recalcUnitPrice();
-            }
+            if (e.target.classList.contains('qty-input') || e.target.name === 'LaborPerPiece') recalcUnitPrice();
         });
 
         document.addEventListener('DOMContentLoaded', recalcUnitPrice);
 
-        document.querySelector('form').addEventListener('submit', function (e) {
+        document.querySelector('form[action*="AddCustomRecipe"]').addEventListener('submit', function (e) {
             const any = Array.from(document.querySelectorAll('.qty-input'))
                 .some(inp => !inp.disabled && parseInt(inp.value || '0', 10) > 0);
             if (!any) {
                 e.preventDefault();
-                alert('Please enter a quantity for at least one in-stock component.');
+                alert('Please choose at least one in-stock component for your design.');
             }
         });
     </script>

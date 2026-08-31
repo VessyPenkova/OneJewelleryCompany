@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;                 // <-- needed for queries
 using OneJevelsCompany.Web.Data;                    // <-- added earlier
@@ -46,6 +46,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Obsolete("Use CartController.AddCustomRecipe (form POST) for quantity-based custom builds.")]
         public async Task<IActionResult> Build([FromBody] BuildRequest req)
         {
@@ -217,6 +218,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<IActionResult> Design(DesignPostVm form)
         {
@@ -247,6 +249,11 @@ namespace OneJevelsCompany.Web.Controllers
             var comps = await _products.GetComponentsAsync();
             var priceById = comps.ToDictionary(c => c.Id, c => c.Price);
             var nameById = comps.ToDictionary(c => c.Id, c => c.Name);
+            if (totals.Keys.Any(id => !priceById.ContainsKey(id)))
+            {
+                TempData["err"] = "One or more selected components no longer exist.";
+                return RedirectToAction(nameof(Design));
+            }
 
             decimal materials = 0m;
             foreach (var kv in totals)
@@ -278,7 +285,9 @@ namespace OneJevelsCompany.Web.Controllers
                 UnitPrice = unitPrice,
                 Quantity = 1,
                 ComponentsSummary = summary,
-                ComponentIdsCsv = string.Join(",", flatIds)
+                ComponentIdsCsv = string.Join(",", flatIds),
+                IsCustomBuild = true,
+                CustomDesignName = string.IsNullOrWhiteSpace(form.DesignName) ? "Custom Bracelet" : form.DesignName.Trim()
             });
 
             TempData["ok"] = "Your custom design was added to the cart.";
@@ -323,6 +332,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [AllowAnonymous]
         public async Task<IActionResult> SubmitDesign([FromBody] SubmitDesignVm vm)
         {
@@ -338,6 +348,15 @@ namespace OneJevelsCompany.Web.Controllers
             if (oneCycle == 0) return BadRequest("Empty pattern.");
 
             var capacity = EstimateCapacity(length, beadMm);
+
+            var requestedIds = vm.Rows.Where(r => r.Count > 0).Select(r => r.ComponentId).Distinct().ToList();
+            var components = await _db.Components.Where(c => requestedIds.Contains(c.Id)).ToDictionaryAsync(c => c.Id);
+            if (components.Count != requestedIds.Count)
+                return BadRequest("One or more selected components no longer exist.");
+
+            var serverEstimate = vm.Rows
+                .Where(r => r.Count > 0)
+                .Sum(r => components[r.ComponentId].Price * r.Count);
 
             var patternJson = JsonSerializer.Serialize(vm.Rows);
 
@@ -356,7 +375,7 @@ namespace OneJevelsCompany.Web.Controllers
                 OneCycleBeads = oneCycle,
                 CapacityEstimate = capacity,
 
-                UnitPriceEstimate = vm.UnitPriceEstimate,
+                UnitPriceEstimate = serverEstimate,
                 CustomerName = vm.CustomerName,
                 CustomerEmail = vm.CustomerEmail,
                 CustomerPhone = vm.CustomerPhone,

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OneJevelsCompany.Web.Data;
 using OneJevelsCompany.Web.Models;
 
@@ -30,7 +30,14 @@ namespace OneJevelsCompany.Web.Services.Product
                 .Include(c => c.Category)
                 .AsQueryable();
 
-            // Example: if later you want to filter components by target jewel category, do it here.
+            if (type.HasValue)
+            {
+                var typeName = type.Value.ToString();
+                q = q.Where(c => c.Category != null && c.Category.Name == typeName);
+            }
+
+            // There is currently no Component -> JewelCategory relationship in the data model,
+            // so forCategory cannot be applied safely without inventing business rules.
 
             return await q
                 .OrderBy(c => c.Category == null ? 999 : c.Category.SortOrder)
@@ -41,25 +48,38 @@ namespace OneJevelsCompany.Web.Services.Product
 
         public async Task<decimal> CalculateCustomPriceAsync(IEnumerable<int> componentIds)
         {
-            var ids = componentIds.Distinct().ToArray();
-            if (ids.Length == 0) return 0m;
+            var requested = componentIds.Where(id => id > 0).ToList();
+            if (requested.Count == 0) return 0m;
 
-            return await _db.Components
-                .Where(c => ids.Contains(c.Id))
-                .SumAsync(c => c.Price);
+            var counts = requested.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
+            var components = await _db.Components
+                .Where(c => counts.Keys.Contains(c.Id))
+                .ToListAsync();
+
+            if (components.Count != counts.Count)
+                throw new InvalidOperationException("One or more selected components do not exist.");
+
+            return components.Sum(c => c.Price * counts[c.Id]);
         }
 
         public async Task<string> DescribeComponentsAsync(IEnumerable<int> componentIds)
         {
-            var ids = componentIds.Distinct().ToArray();
+            var requested = componentIds.Where(id => id > 0).ToList();
+            if (requested.Count == 0) return string.Empty;
+
+            var counts = requested.GroupBy(id => id).ToDictionary(g => g.Key, g => g.Count());
             var comps = await _db.Components
                 .Include(c => c.Category)
-                .Where(c => ids.Contains(c.Id))
+                .Where(c => counts.Keys.Contains(c.Id))
                 .ToListAsync();
 
-            // e.g. "Clasp: Magnetic, Bead: Pearl 6mm"
-            return string.Join(", ",
-                comps.Select(c => $"{(c.Category?.Name ?? "Component")}: {c.Name}"));
+            if (comps.Count != counts.Count)
+                throw new InvalidOperationException("One or more selected components do not exist.");
+
+            return string.Join(", ", comps
+                .OrderBy(c => c.Category == null ? 999 : c.Category.SortOrder)
+                .ThenBy(c => c.Name)
+                .Select(c => $"{counts[c.Id]}× {(c.Category?.Name ?? "Component")}: {c.Name}"));
         }
 
         public Task<List<Design>> GetBestDesignsAsync(JewelCategory? category = null)

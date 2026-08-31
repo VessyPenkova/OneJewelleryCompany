@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OneJevelsCompany.Web.Models.Component>
+@model IEnumerable<OneJevelsCompany.Web.Models.Component>
 @using System.Text.RegularExpressions
 @{
     ViewData["Title"] = "Design Studio";
@@ -32,13 +32,25 @@
     }
 }
 
-<div class="max-w-6xl mx-auto space-y-6">
+
+<style>
+    /* Visual-only Design Studio theme. Preview/rendering JavaScript is untouched. */
+    .design-studio-page { --studio-gold:#b89a63; --studio-gold-dark:#967746; --studio-beige:#e7dccb; --studio-cream:#fbf8f2; --studio-ink:#2d2924; }
+    .design-studio-page input[type="range"], .design-studio-page input[type="radio"], .design-studio-page input[type="checkbox"] { accent-color:var(--studio-gold-dark); }
+    .design-studio-page input[type="number"], .design-studio-page input[type="text"], .design-studio-page input[type="email"] { border-color:var(--studio-beige); background:#fffdf9; }
+    .design-studio-page input:focus { outline:2px solid rgba(184,154,99,.28); outline-offset:1px; border-color:var(--studio-gold); box-shadow:none; }
+    .design-studio-page input[type="range"] { cursor:pointer; }
+    .design-studio-page .studio-back { border-color:var(--studio-beige); color:var(--studio-ink); background:#fffdf9; }
+    .design-studio-page .studio-back:hover { border-color:var(--studio-gold); background:var(--studio-cream); }
+</style>
+
+<div class="design-studio-page max-w-6xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-bold text-amber-700">Design Studio</h1>
             <p class="text-gray-600">Create a bead sequence, set bracelet length & bead size, and preview in 3D angle.</p>
         </div>
-        <a asp-controller="Shop" asp-action="Build" class="px-4 py-2 rounded border">Back to Build</a>
+        <a asp-controller="Shop" asp-action="Build" class="studio-back px-4 py-2 rounded border">Back to Build</a>
     </div>
 
     <!-- Controls -->
@@ -190,7 +202,8 @@
 </div>
 
 @section Scripts {
-    <script>
+    <div style="display:none">@Html.AntiForgeryToken()</div>
+<script>
         (function () {
             // ----------------- State -----------------
             const rowsEl = document.getElementById('rows');
@@ -512,7 +525,7 @@
 
                 const res = await fetch('/Shop/SubmitDesign', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '' },
                     credentials: 'same-origin',
                     body: JSON.stringify(payload)
                 });

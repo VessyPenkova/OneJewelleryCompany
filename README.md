@@ -1,99 +1,103 @@
+# 💎 One Jewellery Company
 
-# 💎 One Jewellery Company – Custom Jewelry Design & Inventory Management
+**Custom jewellery design, ordering, inventory, and administration platform built with ASP.NET Core MVC.**
 
-A modern ASP.NET Core MVC web application designed for a jewelry business.
-The platform allows customers to create custom jewelry designs and helps administrators manage inventory, pricing, and internal invoices.
+One Jewellery Company is a portfolio web application for creating and managing personalized jewellery. Customers can build bracelets and necklaces from individual components, create repeating design patterns, preview designs, add products to a cart, and submit orders. Administrators can manage components, stock, jewellery, design orders, purchase queues, and internal invoices.
 
-## ✨ Key Features
+The project also explores a broader idea: connecting personalized jewellery with flexible crafting opportunities for people who may have limited access to traditional employment.
 
-### 👤 Customer Side
-- **Custom Jewelry Designe**  
-  - Design custom bracelets and necklaces by selecting chains, clasps, beads, pendants, and stones..  
-  - Visual preview of selected components during the design process.
-- **Design Submission**
- - Submit custom designs to administrators for review and processing.  
-  - Receive a reference number upon submission.
-- **Order Form:**  
-  - Simple and intuitive order form to send custom designs directly to the admin team.
+## ✨ Implemented Features
 
-### 🛠 Admin Side
-- **Inventory Management**  
-  - Create, view, and edit jewelry components (name, category, price, stock).
-  - Image-based component catalog.
+### 👤 Customer Experience
 
-- **Invoice Management**  
-  - Internal invoices for component pricing and cost calculation..  
-  - Automatic unit cost calculation.  
+- **Build Your Own Jewellery**
+  - Choose between bracelet and necklace designs.
+  - Select chains, cords, clasps, pendants, beads, pearls, stones, and other available components.
+  - Set component quantities per finished piece and see estimated pricing.
+  - Add a completed custom design to the shopping cart.
+- **Design Studio**
+  - Build a reusable component sequence/pattern.
+  - Configure bracelet length and average bead size.
+  - Switch between line and circular previews and auto-fill to calculated capacity.
+  - Adjust rendered size, tilt, and rotation.
+  - Submit a completed design to the administration workflow.
+- **Collections & Jewellery Catalogue** — browse ready-made jewellery, collections, and product details.
+- **Cart & Checkout** — session-based cart, order creation, inventory validation/deduction, and a development/demo payment flow.
+- **Customer Accounts** — ASP.NET Core Identity registration/sign-in with branded authentication UI.
+- **Our Story** — explains the concept, social purpose, customer-to-maker workflow, and origin of the project.
 
-- **Jewelry Catalogue**  
-  - Organized list of existing and custom designs.  
-  - Easy navigation and editing.
+### 🛠 Administration
 
-## **🧰 Tech Stack**
- - Frontend: ASP.NET Core MVC (Razor Views), HTML5, CSS3, Bootstrap
- - Backend: ASP.NET Core MVC 
- - Database: SQL Server (Entity Framework Core)
- - Authentication: ASP.NET Core Identity
- - Tools: Visual Studio, Entity Framework Core
+- **Dashboard** — central navigation for administrative workflows.
+- **Components & Categories** — create/edit component categories and component data including pricing, stock, images, colors, and dimensions.
+- **Inventory** — stock validation, deduction, and purchase-queue support.
+- **Jewellery Catalogue** — create/edit ready-made jewellery and stock.
+- **Design Orders** — review submitted designs, visual previews, component sequences, statuses, and production information.
+- **Invoices** — internal invoice workflows and component/unit-cost calculations.
+
+## 🧪 Testing
+
+The solution contains two separate test projects:
+
+- **OneJewelsCompany.UnitTests** — NUnit service/business-logic tests covering cart, orders, products, inventory, payment/model behavior, with EF Core InMemory test data.
+- **OneJewelsCompany.PlaywrightTests** — Playwright + NUnit browser/end-to-end test project. Existing Qase reporter integration is retained in this project.
+
+## 🧰 Technology
+
+- **Framework:** .NET 8 / ASP.NET Core MVC
+- **UI:** Razor Views, HTML5, CSS3, Bootstrap and project-specific styling
+- **Database:** SQL Server
+- **ORM:** Entity Framework Core
+- **Authentication:** ASP.NET Core Identity
+- **Testing:** NUnit, EF Core InMemory, Microsoft Playwright
+- **Development:** Visual Studio
 
 ## 👥 Roles
-- **Customer:**  
-  - Designs and submits custom jewelry orders.
-  
-- **Admin:**  
-  - Manages inventory, components, designs, and invoices.
 
-## 🚀 Future Enhancements
-- **📦 Stock Management Enhancements**
-  - Add item dimensions and minimum quantities for bracelet/necklace production.
-  - Base pricing by length.
-  - 3D visualization of shelf location for stored items.
+**Customer:** browse jewellery, create personalized designs, use Design Studio, manage a cart, submit orders, and use account functionality.
 
-- **🪡 Bracelet / Necklace Designer Enhancements**
-  - Add 3D visualization of bracelets in three positions.
-  - Visualize stringing material and clasps.
-  - Preview alternative clasp types directly in the designer.
+**Admin:** manage inventory, components, categories, jewellery, design orders, purchase queues, and invoices.
 
-- **📝 Documentation & PDF Export**
-  - Printable PDF protocols for work orders.
-  - Auto-generated invoices based on protocol data.
+## 🏗️ Solution Structure
 
-- **💰 Invoice & Pricing**
-  - Auto-calculate markup.
-  - Detailed element cost tracking.
+```text
+OneJevelCompany
+├── Controllers
+├── Data
+├── Models
+├── Services
+├── Views
+├── wwwroot
+├── OneJewelsCompany.UnitTests
+└── OneJewelsCompany.PlaywrightTests
+```
 
-- **🏢 Company & Order Management**
-  - Add company database (name, VAT, address, orders).
-  - Link orders to company records.
-  - History of all purchases and designs.
+## 🚀 Planned Enhancements
 
-- **📊 Reporting & Dashboards**
-  - Real-time statistics panel.
-  - Daily / weekly / monthly reports.
+- Stronger visual/functional differences between necklace and bracelet building workflows.
+- More advanced 3D jewellery visualization and component positioning.
+- Additional clasp and stringing-material visualization.
+- Printable/PDF production and order documentation.
+- Expanded automated invoice generation and pricing rules.
+- Company/customer organization records and richer order history.
+- Extended reporting and real-time administrative statistics.
+- Production-ready payment provider integration.
+- Replacement of representative maker stories with real participant stories as the project develops.
 
-## 📸 Screenshots
+## 📸 Portfolio Screenshots
 
-### Custom Bracelet Designer
-![Bracelet Designer Preview](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Build.png)
+The repository contains screenshots from different stages of development. Some older images show previous versions of the interface and should be replaced as the current UI is finalised.
 
-### Build Protocol
-![alt tsxt](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Bild%20protocol.png)
+Recommended current portfolio views: **Home**, **Build Your Own Jewellery**, **Design Studio**, **Our Story**, **Admin Design Orders**, and **Admin Dashboard / Inventory**.
 
-### Admin Design Order Protocol
-![alt tsxt](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/DesignOrderProtocol.png)
+## ℹ️ Development Notes
 
-### Admin Auto Purchese Q
-![alt tsxt](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/AutoPurcheseQueue.png)
+- Payment is currently a **development/demo flow**, not a production payment integration.
+- Representative maker portraits and stories on **Our Story** are concept content, not real participant testimonials.
+- Development administrator seeding is intended for local development only.
+- Stock and pricing behavior should be validated with the included tests whenever business rules change.
 
-### Admin Invoices
-![alt tsxt](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Invoices.png)
-
-### New Categories 
-![alt tstx](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Category.png)
-
-### Performance Dashboard
-![alt tstx](https://github.com/VessyPenkova/OneJevelsCompany.Web/blob/master/Dashbord.png)
 ---
 
-✅ **Developed with ASP.NET Core MVC & SQL Server**  
-© 2025 One Jewellery Company
+**Developed with ASP.NET Core MVC, Entity Framework Core & SQL Server**  
+© 2026 One Jewellery Company

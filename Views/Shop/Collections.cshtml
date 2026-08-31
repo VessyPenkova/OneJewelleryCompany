@@ -1,51 +1,54 @@
-﻿@model IEnumerable<OneJevelsCompany.Web.Models.Jewel>
+@model IEnumerable<OneJevelsCompany.Web.Models.Jewel>
 @using OneJevelsCompany.Web.Models
 @{
     ViewData["Title"] = "Collections";
     var selected = (JewelCategory?)(ViewBag.SelectedCategory ?? null);
 }
 
-<div class="flex justify-center gap-3 mb-6">
-    <a asp-action="Collections" asp-route-category="Necklace"
-       class="px-4 py-2 rounded border @(selected == JewelCategory.Necklace ? "bg-amber-100" : "")">Necklaces</a>
-    <a asp-action="Collections" asp-route-category="Bracelet"
-       class="px-4 py-2 rounded border @(selected == JewelCategory.Bracelet ? "bg-amber-100" : "")">Bracelets</a>
-</div>
+<section class="catalog-header">
+    <div>
+        <div class="eyebrow">The collection</div>
+        <h1>Find your piece</h1>
+        <p>Ready-to-wear jewellery, selected for timeless everyday style.</p>
+    </div>
+    <div class="filter-pills">
+        <a asp-action="Collections" asp-route-category="Necklace" class="filter-pill @(selected == JewelCategory.Necklace ? "active" : "")">Necklaces</a>
+        <a asp-action="Collections" asp-route-category="Bracelet" class="filter-pill @(selected == JewelCategory.Bracelet ? "active" : "")">Bracelets</a>
+    </div>
+</section>
 
 @if (!Model.Any())
 {
-    <div class="text-center text-gray-600">No items found.</div>
+    <div class="panel p-12 text-center text-gray-500">No pieces are available in this selection yet.</div>
 }
 else
 {
-    <div class="grid md:grid-cols-2 gap-6">
+    <div class="product-grid">
         @foreach (var j in Model)
         {
-            <div class="bg-white rounded-lg shadow p-4">
-                <div class="h-48 overflow-hidden rounded">
+            <article class="product-card">
+                <div class="product-image">
                     @if (!string.IsNullOrWhiteSpace(j.ImageUrl))
                     {
-                        <img src="@j.ImageUrl" alt="@j.Name" class="w-full h-48 object-cover" />
+                        <img src="@j.ImageUrl" alt="@j.Name" />
+                    }
+                    else
+                    {
+                        <span class="product-placeholder">◇</span>
                     }
                 </div>
-
-                <h3 class="mt-3 text-lg font-semibold">@j.Name</h3>
-                <div class="text-sm text-gray-600">
-                    Category: @j.Category<br />
-                    In stock: @j.QuantityOnHand
+                <div class="product-body">
+                    <div class="product-meta"><span>@j.Category</span><span>@j.QuantityOnHand in stock</span></div>
+                    <h3>@j.Name</h3>
+                    <div class="product-price">@j.TotalPrice().ToString("C")</div>
+                    <form asp-controller="Shop" asp-action="AddReady" method="post" class="product-buy">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@j.Id" />
+                        <input name="qty" type="number" min="1" max="@j.QuantityOnHand" value="1" aria-label="Quantity" />
+                        <button type="submit">Add to bag</button>
+                    </form>
                 </div>
-                <div class="mt-2 font-semibold">Price: @j.TotalPrice().ToString("C")</div>
-
-                <form asp-controller="Shop" asp-action="AddReady" method="post" class="mt-3 flex items-center gap-3">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@j.Id" />
-                    <label class="text-sm">Qty</label>
-                    <input name="qty" type="number" min="1" value="1" class="w-20 border rounded p-2" />
-                    <button type="submit" class="px-4 py-2 bg-amber-600 text-white rounded hover:bg-amber-500">
-                        Add to Cart
-                    </button>
-                </form>
-            </div>
+            </article>
         }
     </div>
 }

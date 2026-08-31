@@ -11,11 +11,17 @@
     <Content Remove="OneJewelsCompany.PlaywrightTests\**" />
     <EmbeddedResource Remove="OneJewelsCompany.PlaywrightTests\**" />
     <None Remove="OneJewelsCompany.PlaywrightTests\**" />
+
+    <!-- Unit tests are a separate project nested under this folder. -->
+    <Compile Remove="OneJewelsCompany.UnitTests\**\*.cs" />
+    <Content Remove="OneJewelsCompany.UnitTests\**\*" />
+    <EmbeddedResource Remove="OneJewelsCompany.UnitTests\**\*" />
+    <None Remove="OneJewelsCompany.UnitTests\**\*" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">

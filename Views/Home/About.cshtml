@@ -1,12 +1,117 @@
-﻿@{
-    ViewData["Title"] = "About Us";
+@{
+    ViewData["Title"] = "Our Story";
 }
 
-<div class="max-w-3xl mx-auto text-center py-16">
-    <h2 class="text-3xl font-bold text-amber-600 mb-4">About One Jewellery Company</h2>
-    <p class="text-gray-700 leading-relaxed">
-        Founded with passion for timeless beauty,One Jewellery Company blends artistry and precision
-        to craft unique bracelets and necklaces. Our artisans ensure every piece carries elegance
-        and meaning — because jewelry should reflect the soul.
-    </p>
+<style>
+    .story-page{max-width:1120px;margin:0 auto;padding:48px 24px 64px;color:#27231f}
+    .story-eyebrow{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#a88750;font-weight:700;margin-bottom:12px}
+    .story-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center;margin-bottom:54px}
+    .story-hero h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.25rem,4vw,4rem);line-height:1.05;font-weight:400;margin:0 0 22px;color:#27231f}
+    .story-hero p{font-size:1.02rem;line-height:1.8;color:#5e574f;max-width:620px;margin:0}
+    .story-hero-image{height:360px;border-radius:18px;overflow:hidden;border:1px solid #e8dcc9;background:#f6f0e7}
+    .story-hero-image img{width:100%;height:100%;object-fit:cover;display:block}
+    .story-rule{width:38px;height:2px;background:#b99760;margin-top:24px}
+    .story-heading{text-align:center;margin:8px 0 30px}
+    .story-heading h2{font-family:Georgia,'Times New Roman',serif;font-size:2rem;font-weight:400;margin:0 0 7px}
+    .story-heading p{margin:0;color:#766e65}
+    .story-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:60px}
+    .story-step{text-align:center;padding:8px 14px}
+    .story-step-number{width:42px;height:42px;border:1px solid #c8aa78;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;color:#9b7943;font-family:Georgia,serif;font-size:1.1rem;background:#fbf8f3}
+    .story-step h3{font-family:Georgia,'Times New Roman',serif;font-size:1.15rem;font-weight:400;margin:0 0 7px}
+    .story-step p{font-size:.88rem;line-height:1.55;color:#766e65;margin:0}
+    .maker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:54px}
+    .maker-card{border:1px solid #e5d8c4;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 8px 24px rgba(63,49,31,.05)}
+    .maker-card img{width:100%;height:245px;object-fit:cover;display:block}
+    .maker-copy{padding:20px 22px 23px}
+    .maker-copy h3{font-family:Georgia,'Times New Roman',serif;font-size:1.45rem;font-weight:400;margin:0 0 4px}
+    .maker-place{font-size:.78rem;color:#a07d48;margin-bottom:14px}
+    .maker-quote{font-family:Georgia,'Times New Roman',serif;font-size:1rem;line-height:1.6;font-style:italic;color:#514a43;margin:0}
+    .story-demo-note{text-align:center;font-size:.74rem;color:#958b80;margin:-34px 0 48px}
+    .founder-story{display:grid;grid-template-columns:175px minmax(0,1fr);gap:30px;align-items:center;border-top:1px solid #e6d9c6;border-bottom:1px solid #e6d9c6;padding:34px 8px;margin:0 0 38px}
+    .founder-photo{width:158px;height:158px;border-radius:50%;object-fit:cover;object-position:center;border:1px solid #c9aa75;padding:4px;background:#fff}
+    .founder-copy h2{font-family:Georgia,'Times New Roman',serif;font-size:1.65rem;font-weight:400;margin:3px 0 10px}
+    .founder-copy p{max-width:720px;color:#625b53;line-height:1.7;margin:0}
+    .founder-signature{margin-top:15px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1rem;color:#8f7040}
+    .founder-role{display:block;margin-top:3px;font-family:Arial,sans-serif;font-style:normal;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:#a58a5a}
+    .story-cta{border:1px solid #ddccb0;border-radius:14px;padding:24px 28px;display:flex;gap:24px;align-items:center;justify-content:space-between;background:#fbf8f3}
+    .story-cta strong{display:block;font-family:Georgia,'Times New Roman',serif;font-size:1.35rem;font-weight:400;margin-bottom:4px}
+    .story-cta span{color:#6f675e;line-height:1.55}
+    .story-cta a{white-space:nowrap;text-decoration:none;background:#b89a65;color:white;padding:12px 20px;border-radius:7px;font-weight:600}
+    .story-cta a:hover{background:#9f814f;color:white}
+    @@media(max-width:850px){.story-hero{grid-template-columns:1fr;gap:26px}.story-hero-image{height:300px}.story-flow{grid-template-columns:repeat(2,1fr)}.maker-grid{grid-template-columns:1fr}.maker-card{display:grid;grid-template-columns:180px 1fr}.maker-card img{height:100%;min-height:210px}.story-cta{align-items:flex-start;flex-direction:column}}
+    @@media(max-width:540px){.story-page{padding:32px 16px 48px}.founder-story{grid-template-columns:1fr;text-align:center}.founder-photo{margin:0 auto}.story-flow{grid-template-columns:1fr 1fr;gap:10px}.story-step{padding:8px 4px}.maker-card{display:block}.maker-card img{height:260px}.story-cta a{width:100%;text-align:center}}
+</style>
+
+<div class="story-page">
+    <section class="story-hero">
+        <div>
+            <div class="story-eyebrow">Our Story</div>
+            <h1>Jewellery with purpose.<br />Opportunity through craft.</h1>
+            <p>
+                One Jewellery Company began with a simple idea: beautiful, individual jewellery can also create meaningful opportunities. Our vision is to make flexible craft work possible for young single mothers and for people living where traditional job opportunities are limited.
+            </p>
+            <div class="story-rule"></div>
+        </div>
+        <div class="story-hero-image">
+            <img src="~/Images/story/hero-maker.jpg" alt="Jewellery maker working carefully by hand" />
+        </div>
+    </section>
+
+    <section>
+        <div class="story-heading">
+            <div class="story-eyebrow">From an idea to a piece</div>
+            <h2>Designed by you. Made by people.</h2>
+            <p>A personal design can become meaningful work in someone else's hands.</p>
+        </div>
+        <div class="story-flow">
+            <div class="story-step"><div class="story-step-number">1</div><h3>You design</h3><p>Choose the jewellery and components that make it yours.</p></div>
+            <div class="story-step"><div class="story-step-number">2</div><h3>We connect</h3><p>Your design becomes a clear piece ready to be crafted.</p></div>
+            <div class="story-step"><div class="story-step-number">3</div><h3>They create</h3><p>Flexible craft work can create income, skill and independence.</p></div>
+            <div class="story-step"><div class="story-step-number">4</div><h3>You receive</h3><p>A piece made for you, with a story behind it.</p></div>
+        </div>
+    </section>
+
+    <section>
+        <div class="story-heading">
+            <div class="story-eyebrow">The people behind the pieces</div>
+            <h2>Every opportunity has a face.</h2>
+            <p>Small stories that show the kind of future we want to create.</p>
+        </div>
+        <div class="maker-grid">
+            <article class="maker-card">
+                <img src="~/Images/story/maria.jpg" alt="Representative portrait of a jewellery maker" />
+                <div class="maker-copy"><h3>Mariya</h3><div class="maker-place">Plovdiv, Bulgaria</div><p class="maker-quote">“Working from home can give me the chance to earn while staying close to my little one.”</p></div>
+            </article>
+            <article class="maker-card">
+                <img src="~/Images/story/elena.jpg" alt="Representative portrait of a jewellery maker" />
+                <div class="maker-copy"><h3>Elena</h3><div class="maker-place">Stara Zagora, Bulgaria</div><p class="maker-quote">“Learning a craft can become a way to build something of my own.”</p></div>
+            </article>
+            <article class="maker-card">
+                <img src="~/Images/story/anna.jpg" alt="Representative portrait of a jewellery maker" />
+                <div class="maker-copy"><h3>Anna</h3><div class="maker-place">Gabrovo, Bulgaria</div><p class="maker-quote">“Where opportunities are limited, work that can reach beyond my town can change what is possible.”</p></div>
+            </article>
+        </div>
+        <p class="story-demo-note">Representative stories and imagery for the project concept; real maker stories will replace them as the community grows.</p>
+    </section>
+
+    <section class="founder-story" aria-labelledby="idea-began-title">
+        <img class="founder-photo" src="~/Images/story/veselina-penkova.jpg" alt="Veselina Penkova, creator of the One Jewellery Company concept" />
+        <div class="founder-copy">
+            <div class="story-eyebrow">Where the idea began</div>
+            <h2 id="idea-began-title">A personal idea with a human purpose.</h2>
+            <p>
+                One Jewellery Company started with a simple thought: beautiful things can create opportunities too.
+                The idea was to connect personalised jewellery with flexible work for young single mothers and people living where employment opportunities are limited.
+            </p>
+            <div class="founder-signature">
+                Veselina Penkova
+                <span class="founder-role">Creator of the concept</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="story-cta">
+        <div><strong>Create something personal.</strong><span>Your design can be more than jewellery — it can be part of an opportunity.</span></div>
+        <a asp-controller="Shop" asp-action="Build">Build Your Own Jewellery →</a>
+    </section>
 </div>

@@ -1,4 +1,4 @@
-﻿@* Views/Shared/_Layout.cshtml *@
+@* Views/Shared/_Layout.cshtml *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,60 +7,68 @@
     <title>@ViewData["Title"] - One Jewellery Company</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="~/css/champagne-theme.css" asp-append-version="true" />
-
 </head>
-<body class="bg-gray-100 font-sans text-gray-800">
-    <nav class="bg-white shadow-md px-4 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a asp-controller="Home" asp-action="Index" class="text-2xl font-bold text-amber-600">One Jewellery Company</a>
+<body>
+    <header class="site-header">
+        <div class="announcement-bar">Designed with intention · Crafted with precision</div>
+        <nav class="site-nav">
+            <div class="nav-inner">
+                <a asp-controller="Home" asp-action="Index" class="brand" aria-label="One Jewellery Company home">
+                    <span class="brand-mark">◇</span>
+                    <span>ONE <strong>JEWELLERY</strong> COMPANY</span>
+                </a>
 
-            <div class="hidden md:flex items-center gap-5">
-                @* When logged-in user is Admin, show back-office links only *@
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-controller="Admin" asp-action="Index" class="font-semibold hover:text-amber-600">Admin</a>
-                    <a asp-controller="Admin" asp-action="NewInvoice" class="hover:text-amber-600">New Invoice</a>
-                    <a asp-controller="Admin" asp-action="Invoices" class="hover:text-amber-600">Invoices</a>
-                    <a asp-controller="Admin" asp-action="Components" class="hover:text-amber-600">Components</a>
-                    <a asp-controller="Admin" asp-action="Jewels" class="hover:text-amber-600">Jewels</a>
-                }
-                else
-                {
-                    <a asp-controller="Home" asp-action="Index" class="hover:text-amber-600">Home</a>
-                    <a asp-controller="Home" asp-action="About" class="hover:text-amber-600">About</a>
-                    <a asp-controller="Shop" asp-action="Collections" class="hover:text-amber-600">Collections</a>
-                    <a asp-controller="Shop" asp-action="Build" class="hover:text-amber-600">Build Your Own</a>
-                    <a asp-controller="Designs" asp-action="Index" class="hover:text-amber-600">Designs</a>
-                    <a asp-controller="Cart" asp-action="Cart" class="hover:text-amber-600">Cart</a>
-                }
+                <div class="nav-links">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index">Dashboard</a>
+                        <a asp-controller="Admin" asp-action="Invoices">Invoices</a>
+                        <a asp-controller="Admin" asp-action="Components">Components</a>
+                        <a asp-controller="Admin" asp-action="Jewels">Jewels</a>
+                        <a asp-controller="Admin" asp-action="DesignOrders">Design Orders</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="Index">Home</a>
+                        <a asp-controller="Shop" asp-action="Collections">Collections</a>
+                        <a asp-controller="Shop" asp-action="Build">Build Your Own</a>
+                        <a asp-controller="Designs" asp-action="Index">Designs</a>
+                        <a asp-controller="Home" asp-action="About">Our Story</a>
+                        <a asp-controller="Cart" asp-action="Cart" class="nav-cart">Bag</a>
+                    }
+                </div>
 
-                @* Auth block *@
-                @if (User?.Identity?.IsAuthenticated == true)
-                {
-                    <span class="text-gray-500">Hello, @User.Identity!.Name</span>
-                    <form class="inline"
-                          method="post"
-                          asp-area="Identity"
-                          asp-page="/Account/Logout"
-                          asp-route-returnUrl="@Url.Action("Index", "Home")">
-                        <button type="submit" class="text-red-600 hover:underline">Logout</button>
-                    </form>
-                }
-                else
-                {
-                    <a asp-area="Identity" asp-page="/Account/Login" class="hover:text-amber-600">Login</a>
-                    <a asp-area="Identity" asp-page="/Account/Register" class="hover:text-amber-600">Register</a>
-                }
+                <div class="auth-links">
+                    @if (User?.Identity?.IsAuthenticated == true)
+                    {
+                        <span class="user-name">@User.Identity!.Name</span>
+                        <form method="post" asp-area="Identity" asp-page="/Account/Logout"
+                              asp-route-returnUrl="@Url.Action("Index", "Home")">
+                            <button type="submit" class="link-button">Sign out</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Login">Sign in</a>
+                        <a asp-area="Identity" asp-page="/Account/Register" class="nav-cta">Create account</a>
+                    }
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <main class="container mx-auto mt-8 px-4">
+    <main class="site-main">
         @RenderBody()
     </main>
 
-    <footer class="mt-12 text-center text-sm text-gray-500 border-t py-4">
-        &copy; @DateTime.Now.Year One Jewellery Company — Crafted with 💎 precision
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <div class="footer-brand">ONE JEWELLERY COMPANY</div>
+                <p>Individual pieces. Thoughtful design. Timeless character.</p>
+            </div>
+            <div class="footer-meta">© @DateTime.Now.Year One Jewellery Company · Crafted with precision</div>
+        </div>
     </footer>
 
     @RenderSection("Scripts", required: false)

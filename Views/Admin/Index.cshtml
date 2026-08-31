@@ -1,17 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Admin";
+@{
+    ViewData["Title"] = "Admin Dashboard";
 }
-<h2 class="text-2xl font-bold text-amber-600 mb-6">Admin Dashboard</h2>
-<div class="space-x-3">
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/NewInvoice">New Invoice</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/Invoices">Invoices</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/Components">Components</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/Jewels">Jewels</a>
-    <!-- NEW buttons styled like the others -->
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/ComponentCategories">Categories</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/NewCategory">New Category</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/NewComponent">New Item</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/DesignOrders">Design Orders</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/ReadyDesignOrders">Ready Design Orders</a>
-    <a class="px-4 py-2 rounded bg-amber-600 text-white" href="/Admin/PurchaseQueue">Purchase Queue</a>
+<section class="admin-hero">
+    <div>
+        <div class="eyebrow">Back office</div>
+        <h1>Operations dashboard</h1>
+        <p>Manage catalogue, stock, purchasing and customer design work from one place.</p>
+    </div>
+    <a class="lux-btn primary" asp-action="NewInvoice">Create invoice</a>
+</section>
+
+<div class="admin-grid">
+    <a class="admin-card" asp-action="Invoices"><span class="number">01</span><span class="arrow">↗</span><h3>Invoices</h3><p>Receive stock and review supplier invoice history.</p></a>
+    <a class="admin-card" asp-action="Components"><span class="number">02</span><span class="arrow">↗</span><h3>Components</h3><p>Maintain materials, component stock, prices and categories.</p></a>
+    <a class="admin-card" asp-action="Jewels"><span class="number">03</span><span class="arrow">↗</span><h3>Jewels</h3><p>Manage ready-made jewellery, availability and catalogue details.</p></a>
+    <a class="admin-card" asp-action="DesignOrders"><span class="number">04</span><span class="arrow">↗</span><h3>Design orders</h3><p>Review customer-created pieces and work awaiting production.</p></a>
+    <a class="admin-card" asp-action="ReadyDesignOrders"><span class="number">05</span><span class="arrow">↗</span><h3>Ready designs</h3><p>Track design orders that are ready for their next step.</p></a>
+    <a class="admin-card" asp-action="PurchaseQueue"><span class="number">06</span><span class="arrow">↗</span><h3>Purchase queue</h3><p>See replenishment needs generated from current inventory.</p></a>
+    <a class="admin-card" asp-action="NewComponent"><span class="number">07</span><span class="arrow">↗</span><h3>Add component</h3><p>Create a new material or component record.</p></a>
+    <a class="admin-card" asp-action="NewCategory"><span class="number">08</span><span class="arrow">↗</span><h3>Add category</h3><p>Organise components into clear catalogue groups.</p></a>
+    <a class="admin-card" asp-action="NewJewel"><span class="number">09</span><span class="arrow">↗</span><h3>Add jewel</h3><p>Create a new ready-to-sell jewellery piece.</p></a>
 </div>

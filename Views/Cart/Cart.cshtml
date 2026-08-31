@@ -1,4 +1,4 @@
-﻿@model List<OneJevelsCompany.Web.Models.CartItem>
+@model List<OneJevelsCompany.Web.Models.CartItem>
 @{
     ViewData["Title"] = "Your Cart";
 }
@@ -31,6 +31,7 @@ else
                     <td class="p-2">@item.LineTotal.ToString("C")</td>
                     <td class="p-2">
                         <form method="post" action="/Cart/Remove">
+                            @Html.AntiForgeryToken()
                             <input type="hidden" name="sku" value="@item.Sku" />
                             <button class="text-red-500 hover:underline">Remove</button>
                         </form>

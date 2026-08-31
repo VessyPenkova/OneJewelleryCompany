@@ -1,21 +1,23 @@
-﻿@{
+@{
     ViewData["Title"] = "Checkout";
 }
-
-<h2 class="text-2xl font-bold text-amber-600 mb-6 text-center">Checkout</h2>
-
-<form method="post" action="/Checkout/CreateOrder" class="max-w-xl mx-auto bg-white p-6 shadow rounded">
-    <div class="mb-4">
-        <label>Email</label>
-        <input name="email" class="border rounded w-full p-2" required />
+<section class="checkout-shell">
+    <div class="text-center mb-8">
+        <div class="eyebrow">Secure checkout</div>
+        <h1 class="page-title">Complete your order</h1>
+        <p class="text-gray-500">Enter your delivery details to continue.</p>
     </div>
-
-    <div class="mb-4">
-        <label>Shipping Address</label>
-        <textarea name="address" class="border rounded w-full p-2" required></textarea>
-    </div>
-
-    <button type="submit" class="bg-amber-600 text-white px-6 py-3 rounded hover:bg-amber-500 transition w-full">
-        Confirm Order & Pay
-    </button>
-</form>
+    <form method="post" action="/Checkout/CreateOrder" class="panel checkout-card">
+        @Html.AntiForgeryToken()
+        <div class="mb-6">
+            <label class="form-label-pro" for="email">Email address</label>
+            <input id="email" name="email" type="email" class="form-control-pro" autocomplete="email" required />
+        </div>
+        <div class="mb-7">
+            <label class="form-label-pro" for="address">Shipping address</label>
+            <textarea id="address" name="address" rows="4" class="form-control-pro" autocomplete="street-address" required></textarea>
+        </div>
+        <button type="submit" class="lux-btn primary w-full">Confirm order &amp; pay</button>
+        <p class="text-center text-xs text-gray-400 mt-4">Your order details are reviewed before completion.</p>
+    </form>
+</section>

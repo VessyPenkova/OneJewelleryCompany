@@ -1,0 +1,57 @@
+@page
+@model OneJevelsCompany.Web.Areas.Identity.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<section class="identity-shell">
+    <div class="identity-card">
+        <div class="identity-kicker">WELCOME BACK</div>
+        <h1>Sign in to your account</h1>
+        <p class="identity-intro">Continue to your designs, orders and jewellery bag.</p>
+
+        <form id="account" method="post" class="identity-form">
+            <div asp-validation-summary="ModelOnly" class="identity-validation" role="alert"></div>
+
+            <div class="identity-field">
+                <label asp-for="Input.Email">Email address</label>
+                <input asp-for="Input.Email" autocomplete="username" placeholder="you@example.com" />
+                <span asp-validation-for="Input.Email"></span>
+            </div>
+
+            <div class="identity-field">
+                <label asp-for="Input.Password">Password</label>
+                <input asp-for="Input.Password" autocomplete="current-password" placeholder="Enter your password" />
+                <span asp-validation-for="Input.Password"></span>
+            </div>
+
+            <div class="identity-row">
+                <label class="identity-check">
+                    <input asp-for="Input.RememberMe" />
+                    <span>Remember me</span>
+                </label>
+                <a asp-page="./ForgotPassword">Forgot password?</a>
+            </div>
+
+            <button id="login-submit" type="submit" class="identity-submit">Sign in</button>
+        </form>
+
+        <div class="identity-divider"><span>NEW TO ONE JEWELLERY COMPANY?</span></div>
+        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="identity-secondary">Create an account</a>
+
+        <p class="identity-back"><a asp-controller="Home" asp-action="Index">← Return to the collection</a></p>
+    </div>
+
+    <aside class="identity-story" aria-label="One Jewellery Company">
+        <div class="identity-story-mark">◇</div>
+        <div class="identity-kicker">ONE JEWELLERY COMPANY</div>
+        <h2>Designed around you.</h2>
+        <p>Save your favourites, return to your custom designs and keep every order in one place.</p>
+        <div class="identity-story-line"></div>
+        <p class="identity-story-note">Individual pieces · Thoughtful design · Timeless character</p>
+    </aside>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

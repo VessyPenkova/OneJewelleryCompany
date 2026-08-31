@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OneJevelsCompany.Web.Data;
 using OneJevelsCompany.Web.Models;
 
@@ -27,7 +27,13 @@ namespace OneJevelsCompany.Web.Services.Orders
                     Category = i.Category,
                     Quantity = i.Quantity,
                     UnitPrice = i.UnitPrice,
-                    ComponentsSummary = i.ComponentsSummary
+                    ComponentsSummary = i.ComponentsSummary,
+                    ComponentIdsCsv = i.ComponentIdsCsv,
+                    ReadyJewelId = i.ReadyJewelId,
+                    CollectionId = i.CollectionId,
+                    IsCustomBuild = i.IsCustomBuild,
+                    RecipeJson = i.RecipeJson,
+                    CustomDesignName = i.CustomDesignName
                 });
             }
 

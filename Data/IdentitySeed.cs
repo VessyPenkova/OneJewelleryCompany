@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace OneJevelsCompany.Web.Data
@@ -10,14 +10,15 @@ namespace OneJevelsCompany.Web.Data
             using var scope = services.CreateScope();
             var roleMgr = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            await db.Database.MigrateAsync();
+            var env = scope.ServiceProvider.GetRequiredService<IHostEnvironment>();
 
             const string AdminRole = "Admin";
             if (!await roleMgr.RoleExistsAsync(AdminRole))
                 await roleMgr.CreateAsync(new IdentityRole(AdminRole));
 
-            // Seed admin user (change later!)
+            // Never create a known default-password account outside Development.
+            if (!env.IsDevelopment()) return;
+
             var email = "admin@onejevels.test";
             var pwd = "Admin!2345"; // strong dev password
             var admin = await userMgr.FindByEmailAsync(email);

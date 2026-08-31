@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using OneJevelsCompany.Web.Data;
 using OneJevelsCompany.Web.Services.Cart;
 using OneJevelsCompany.Web.Services.Inventory;
 using OneJevelsCompany.Web.Services.Orders;
@@ -14,17 +15,20 @@ namespace OneJevelsCompany.Web.Controllers
         private readonly IOrderService _orders;
         private readonly IPaymentService _payments;
         private readonly IInventoryService _inventory;
+        private readonly AppDbContext _db;
 
         public CheckoutController(
             ICartService cart,
             IOrderService orders,
             IPaymentService payments,
-            IInventoryService inventory)
+            IInventoryService inventory,
+            AppDbContext db)
         {
             _cart = cart;
             _orders = orders;
             _payments = payments;
             _inventory = inventory;
+            _db = db;
         }
 
         // GET /Checkout
@@ -41,6 +45,7 @@ namespace OneJevelsCompany.Web.Controllers
 
         // POST /Checkout/CreateOrder
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateOrder(string? email, string? address)
         {
             var items = _cart.GetCart(HttpContext);
@@ -55,25 +60,30 @@ namespace OneJevelsCompany.Web.Controllers
                 return RedirectToAction("Cart", "Cart");
             }
 
-            // 2) Create the order from the cart
-            var order = await _orders.CreateOrderAsync(email, address, items);
-
-            // 3) Create (or update) a payment intent (Stripe-ready abstraction)
-            var intent = await _payments.CreateOrUpdatePaymentIntentAsync(order.Id, order.Total);
-
-            // 4) For now, simulate immediate success; in production confirm via Stripe Elements/Webhooks
-            await _orders.MarkPaidAsync(order.Id, intent.Id);
-
-            // 5) Decrement inventory only after payment is marked as paid
-            var savedOrder = await _orders.GetAsync(order.Id);
-            if (savedOrder != null)
+            // Keep order creation, paid state and inventory deduction atomic.
+            await using var tx = await _db.Database.BeginTransactionAsync();
+            try
             {
-                await _inventory.DecrementOnPaidOrderAsync(savedOrder);
-            }
+                var order = await _orders.CreateOrderAsync(email, address, items);
+                var intent = await _payments.CreateOrUpdatePaymentIntentAsync(order.Id, order.Total);
 
-            // 6) Clear cart and redirect
-            _cart.Clear(HttpContext);
-            return RedirectToAction(nameof(Success), new { id = order.Id });
+                // Development payment service is simulated. Replace this with provider confirmation/webhook in production.
+                await _orders.MarkPaidAsync(order.Id, intent.Id);
+
+                var savedOrder = await _orders.GetAsync(order.Id)
+                    ?? throw new InvalidOperationException("The newly-created order could not be reloaded.");
+                await _inventory.DecrementOnPaidOrderAsync(savedOrder);
+
+                await tx.CommitAsync();
+                _cart.Clear(HttpContext);
+                return RedirectToAction(nameof(Success), new { id = order.Id });
+            }
+            catch (InvalidOperationException ex)
+            {
+                await tx.RollbackAsync();
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Cart", "Cart");
+            }
         }
 
         // GET /Checkout/Success/{id}

@@ -88,7 +88,7 @@ OneJevelCompany
 
 The repository contains screenshots from different stages of development. Some older images show previous versions of the interface and should be replaced as the current UI is finalised.
 
-Recommended current portfolio views: **Home**, **Build Your Own Jewellery**, **Design Studio**, **Our Story**, **Admin Design Orders**, and **Admin Dashboard / Inventory**.
+Recommended current portfolio views will be added: **Home**, **Build Your Own Jewellery**, **Design Studio**, **Our Story**, **Admin Design Orders**, and **Admin Dashboard / Inventory**.
 
 ## ℹ️ Development Notes
 

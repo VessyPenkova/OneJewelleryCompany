@@ -468,16 +468,7 @@ namespace OneJevelsCompany.Web.Controllers
         }
 
         // ======== Small VMs used by Details/Configure ========
-        public class ComponentDetailsVm
-        {
-            public int Id { get; set; }
-            public string Name { get; set; } = "";
-            public string? ImageUrl { get; set; }
-            public string? Color { get; set; }
-            public string? SizeLabel { get; set; }
-            public string? Dimensions { get; set; }
-            public string? Description { get; set; }
-        }
+       
 
         public class ConfigureComponentVm
         {

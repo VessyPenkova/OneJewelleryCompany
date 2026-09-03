@@ -1,0 +1,123 @@
+﻿@model OneJevelsCompany.Web.Controllers.AdminController.DesignOrderDetailsVm
+@{
+    Layout = null;
+    ViewData["Title"] = $"Build Protocol — Order #{Model.Order.Id}";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/admin-design-order-protocol.css" asp-append-version="true" />
+</head>
+<body class="protocol-page">
+    <main class="protocol-shell">
+        <div class="protocol-actions">
+            <a class="protocol-btn protocol-btn-secondary" href="/Admin/DesignOrder/@Model.Order.Id">Back</a>
+            <button class="protocol-btn protocol-btn-primary" type="button" onclick="window.print()">Print</button>
+        </div>
+
+        <header class="protocol-header">
+            <div>
+                <div class="protocol-kicker">ONE JEWELLERY COMPANY</div>
+                <h1>Build Protocol — Order #@Model.Order.Id</h1>
+            </div>
+            <span class="protocol-status">@Model.Order.Status</span>
+        </header>
+
+        <section class="protocol-meta-grid">
+            <div><span>Customer</span><strong>@(string.IsNullOrWhiteSpace(Model.Order.CustomerName) ? "—" : Model.Order.CustomerName)</strong></div>
+            <div><span>Created</span><strong>@Model.Order.CreatedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</strong></div>
+            <div><span>Category</span><strong>@Model.Order.Category</strong></div>
+            <div><span>Quantity</span><strong>@Model.Order.Quantity</strong></div>
+            <div><span>Length / bead</span><strong>@Model.Order.LengthCm.ToString("0.00") cm / @Model.Order.BeadMm mm</strong></div>
+            <div><span>Cycle / capacity / repeats</span><strong>@Model.Order.OneCycleBeads / @Model.Order.CapacityEstimate / ×@Model.Repeats</strong></div>
+        </section>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Order.PreviewDataUrl))
+        {
+            <section class="protocol-preview-section">
+                <h2>Design Preview</h2>
+
+                <div class="protocol-preview-frame">
+                    <img src="@Model.Order.PreviewDataUrl"
+                         alt="Design preview for order #@Model.Order.Id"
+                         class="protocol-preview-image" />
+                </div>
+            </section>
+        }
+
+        <section class="protocol-section">
+            <h2>Materials per finished piece</h2>
+            <div class="protocol-table-wrap">
+                <table class="protocol-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Component</th>
+                            <th>mm</th>
+                            <th>Per piece</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.Rows.Count; i++)
+                        {
+                            var r = Model.Rows[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>
+                                    <div class="protocol-component">
+                                        @if (!string.IsNullOrWhiteSpace(r.ImageUrl))
+                                        {
+                                            <img src="@r.ImageUrl" alt="@r.Name" class="protocol-component-image" />
+                                        }
+                                        <div>
+                                            <strong>@r.Name</strong>
+                                            <small>ID: @r.ComponentId</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@r.Mm</td>
+                                <td>@r.CountPerJewel</td>
+                                <td>@r.Stock</td>
+                            </tr>
+                        }
+                        <tr class="protocol-total-row">
+                            <td colspan="3">Totals per piece</td>
+                            <td>@Model.TotalBeadsPerPiece</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="protocol-section">
+            <h2>Required materials for @Model.Order.Quantity piece(s)</h2>
+            <div class="protocol-table-wrap">
+                <table class="protocol-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th class="protocol-number">Needed</th>
+                            <th class="protocol-number">In stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model.Rows)
+                        {
+                            <tr>
+                                <td>@r.Name</td>
+                                <td class="protocol-number">@r.NeededTotal</td>
+                                <td class="protocol-number">@r.Stock</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

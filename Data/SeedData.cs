@@ -31,22 +31,23 @@ namespace OneJevelsCompany.Web.Data
             if (!await db.Components.AnyAsync())
             {
                 var components = new List<Component>
-                {
-                    new Component { Name = "Gold Chain (45cm)",      ComponentCategoryId = catChain.Id,   Price = 120m, Sku = "CHN-G-45",   ImageUrl="/images/chain-gold-45.jpg",   Dimensions="45cm",        QuantityOnHand = 20 },
-                    new Component { Name = "Silver Chain (45cm)",    ComponentCategoryId = catChain.Id,   Price =  40m, Sku = "CHN-S-45",   ImageUrl="/images/chain-silver-45.jpg", Dimensions="45cm",        QuantityOnHand = 30 },
-                    new Component { Name = "Leather Cord (Black)",   ComponentCategoryId = catChain.Id,   Price =  20m, Sku = "CORD-BLK",   ImageUrl="/images/cord-black.jpg",      Dimensions="Adjustable",  QuantityOnHand = 40 },
+                   {
+                       new Component { Name = "Gold Chain (45cm)",      ComponentCategoryId = catChain.Id,   Price = 120m, Sku = "CHN-G-45",   ImageUrl="/Images/Seed/chain-gold-45.jpg",   Dimensions="45cm",        QuantityOnHand = 20 },
+                       new Component { Name = "Silver Chain (45cm)",    ComponentCategoryId = catChain.Id,   Price =  40m, Sku = "CHN-S-45",   ImageUrl="/Images/Seed/chain-silver-45.jpg", Dimensions="45cm",        QuantityOnHand = 30 },
+                       new Component { Name = "Leather Cord (Black)",   ComponentCategoryId = catChain.Id,   Price =  20m, Sku = "CORD-BLK",   ImageUrl="/Images/Seed/cord-black.jpg",      Dimensions="Adjustable",  QuantityOnHand = 40 },
+                   
+                       new Component { Name = "Clasp – Gold",           ComponentCategoryId = catClasp.Id,   Price =  25m, Sku = "CLASP-G",     ImageUrl="/Images/Seed/clasp-gold.jpg",      Dimensions="Std",         QuantityOnHand = 50 },
+                       new Component { Name = "Clasp – Silver",         ComponentCategoryId = catClasp.Id,   Price =  10m, Sku = "CLASP-S",     ImageUrl="/Images/Seed/clasp-silver.jpg",    Dimensions="Std",         QuantityOnHand = 60 },
+                   
+                       new Component { Name = "Pendant – Amethyst",     ComponentCategoryId = catPendant.Id, Price =  60m, Sku = "PEND-AMETH",  ImageUrl="/Images/Seed/pendant-amethyst.jpg", Dimensions="Oval 18mm",  QuantityOnHand = 15, Color="Purple" },
+                       new Component { Name = "Pendant – Emerald",      ComponentCategoryId = catPendant.Id, Price = 240m, Sku = "PEND-EMRLD",  ImageUrl="/Images/Seed/pendant-emerald.jpg",  Dimensions="Pear 14mm",  QuantityOnHand =  8, Color="Green"  },
+                       new Component { Name = "Pendant – Pearl",        ComponentCategoryId = catPendant.Id, Price =  85m, Sku = "PEND-PEARL",   ImageUrl="/Images/Seed/pendant-pearl.jpg",    Dimensions="9mm",        QuantityOnHand = 18, Color="White"  },
+                   
+                       new Component { Name = "Bead – Onyx (pack)",     ComponentCategoryId = catBead.Id,    Price =  15m, Sku = "BEAD-ONX",    ImageUrl="/Images/Seed/bead-onyx.jpg",        Dimensions="6mm (pack)", QuantityOnHand = 40, Color="Black", SizeLabel="6mm" },
+                       new Component { Name = "Bead – Rose Quartz (pack)", ComponentCategoryId = catBead.Id,  Price =  18m, Sku = "BEAD-RQ",      ImageUrl="/Images/Seed/bead-rose-quartz.jpg", Dimensions="6mm (pack)", QuantityOnHand = 35, Color="Pink",  SizeLabel="6mm" },
+                       new Component { Name = "Bead – Lapis (pack)",    ComponentCategoryId = catBead.Id,    Price =  22m, Sku = "BEAD-LAPIS",  ImageUrl="/Images/Seed/bead-lapis.jpg",       Dimensions="6mm (pack)", QuantityOnHand = 32, Color="Blue",  SizeLabel="6mm" }
+                   };
 
-                    new Component { Name = "Clasp – Gold",           ComponentCategoryId = catClasp.Id,   Price =  25m, Sku = "CLASP-G",     ImageUrl="/images/clasp-gold.jpg",      Dimensions="Std",         QuantityOnHand = 50 },
-                    new Component { Name = "Clasp – Silver",         ComponentCategoryId = catClasp.Id,   Price =  10m, Sku = "CLASP-S",     ImageUrl="/images/clasp-silver.jpg",    Dimensions="Std",         QuantityOnHand = 60 },
-
-                    new Component { Name = "Pendant – Amethyst",     ComponentCategoryId = catPendant.Id, Price =  60m, Sku = "PEND-AMETH",  ImageUrl="/images/pendant-amethyst.jpg", Dimensions="Oval 18mm",  QuantityOnHand = 15, Color="Purple" },
-                    new Component { Name = "Pendant – Emerald",      ComponentCategoryId = catPendant.Id, Price = 240m, Sku = "PEND-EMRLD",  ImageUrl="/images/pendant-emerald.jpg",  Dimensions="Pear 14mm",  QuantityOnHand =  8, Color="Green"  },
-                    new Component { Name = "Pendant – Pearl",        ComponentCategoryId = catPendant.Id, Price =  85m, Sku = "PEND-PEARL",   ImageUrl="/images/pendant-pearl.jpg",    Dimensions="9mm",        QuantityOnHand = 18, Color="White"  },
-
-                    new Component { Name = "Bead – Onyx (pack)",     ComponentCategoryId = catBead.Id,    Price =  15m, Sku = "BEAD-ONX",    ImageUrl="/images/bead-onyx.jpg",        Dimensions="6mm (pack)", QuantityOnHand = 40, Color="Black", SizeLabel="6mm" },
-                    new Component { Name = "Bead – Rose Quartz (pack)", ComponentCategoryId = catBead.Id,  Price =  18m, Sku = "BEAD-RQ",      ImageUrl="/images/bead-rose-quartz.jpg", Dimensions="6mm (pack)", QuantityOnHand = 35, Color="Pink",  SizeLabel="6mm" },
-                    new Component { Name = "Bead – Lapis (pack)",    ComponentCategoryId = catBead.Id,    Price =  22m, Sku = "BEAD-LAPIS",  ImageUrl="/images/bead-lapis.jpg",       Dimensions="6mm (pack)", QuantityOnHand = 32, Color="Blue",  SizeLabel="6mm" }
-                };
                 db.Components.AddRange(components);
                 await db.SaveChangesAsync();
             }

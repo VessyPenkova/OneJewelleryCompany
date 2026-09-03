@@ -1,0 +1,273 @@
+﻿:root {
+    --protocol-ink: #171717;
+    --protocol-muted: #6b7280;
+    --protocol-line: #e5e7eb;
+    --protocol-soft: #faf8f4;
+    --protocol-accent: #b89a67;
+    --protocol-dark: #1f2937;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body.protocol-page {
+    margin: 0;
+    background: #ffffff;
+    color: var(--protocol-ink);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.protocol-shell {
+    width: min(1100px, calc(100% - 48px));
+    margin: 32px auto;
+}
+
+.protocol-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.protocol-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 9px 16px;
+    border: 1px solid #c9c2b6;
+    border-radius: 6px;
+    background: #ffffff;
+    color: var(--protocol-ink);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.protocol-btn-primary {
+    background: var(--protocol-dark);
+    border-color: var(--protocol-dark);
+    color: #ffffff;
+}
+
+.protocol-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--protocol-accent);
+}
+
+.protocol-kicker {
+    margin-bottom: 6px;
+    color: var(--protocol-accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .18em;
+}
+
+.protocol-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.protocol-status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f3eadb;
+    color: #765d36;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.protocol-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 22px 0 28px;
+}
+
+    .protocol-meta-grid > div {
+        padding: 14px;
+        border: 1px solid var(--protocol-line);
+        border-radius: 8px;
+        background: var(--protocol-soft);
+    }
+
+    .protocol-meta-grid span,
+    .protocol-meta-grid strong {
+        display: block;
+    }
+
+    .protocol-meta-grid span {
+        margin-bottom: 4px;
+        color: var(--protocol-muted);
+        font-size: 12px;
+    }
+
+    .protocol-meta-grid strong {
+        font-size: 14px;
+    }
+
+.protocol-section {
+    margin-top: 28px;
+}
+
+    .protocol-section h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+    }
+
+.protocol-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--protocol-line);
+    border-radius: 8px;
+}
+
+.protocol-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+    .protocol-table th,
+    .protocol-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--protocol-line);
+        text-align: left;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .protocol-table th {
+        background: var(--protocol-soft);
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .protocol-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+.protocol-number {
+    text-align: right !important;
+    white-space: nowrap;
+}
+
+/* Component cell */
+.protocol-component {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+    /* IMPORTANT: force every product image to thumbnail size */
+    .protocol-component > img.protocol-component-image {
+        display: block !important;
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        max-width: 48px !important;
+        min-height: 48px !important;
+        max-height: 48px !important;
+        flex: 0 0 48px !important;
+        object-fit: contain !important;
+        border: 1px solid var(--protocol-line);
+        border-radius: 6px;
+        background: #ffffff;
+    }
+
+    .protocol-component strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .protocol-component small {
+        display: block;
+        margin-top: 3px;
+        color: var(--protocol-muted);
+        font-size: 11px;
+    }
+
+.protocol-total-row {
+    background: var(--protocol-soft);
+    font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    .protocol-shell {
+        width: calc(100% - 24px);
+        margin: 16px auto;
+    }
+
+    .protocol-meta-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.protocol-preview-section {
+    margin: 24px 0 28px;
+}
+
+    .protocol-preview-section h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+    }
+
+.protocol-preview-frame {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--protocol-line);
+    border-radius: 8px;
+    background: #ffffff;
+    text-align: center;
+}
+
+.protocol-preview-image {
+    display: block;
+    width: auto;
+    max-width: 520px;
+    max-height: 260px;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+/* YOUR EXISTING PRINT SECTION STARTS HERE */
+@media print {
+
+    @media print {
+        @page {
+            size: A4 portrait;
+            margin: 12mm;
+        }
+
+        .protocol-actions {
+            display: none;
+        }
+
+        .protocol-shell {
+            width: 100%;
+            margin: 0;
+        }
+
+        .protocol-meta-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .protocol-table-wrap {
+            overflow: visible;
+        }
+
+        .protocol-component > img.protocol-component-image {
+            width: 36px !important;
+            height: 36px !important;
+            min-width: 36px !important;
+            max-width: 36px !important;
+            min-height: 36px !important;
+            max-height: 36px !important;
+        }
+    }

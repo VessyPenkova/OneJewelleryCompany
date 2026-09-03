@@ -439,6 +439,81 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Admin/DesignOrderDetails.cshtml", vm);
         }
 
+        // GET /Admin/DesignOrderProtocol/{id}
+        [HttpGet("/Admin/DesignOrderProtocol/{id:int}")]
+        public async Task<IActionResult> DesignOrderProtocol(int id)
+        {
+            var o = await _db.DesignOrders.FirstOrDefaultAsync(x => x.Id == id);
+            if (o == null) return NotFound();
+
+            List<PatternRowDto> rowsDto;
+            try
+            {
+                rowsDto = JsonSerializer.Deserialize<List<PatternRowDto>>(
+                    string.IsNullOrWhiteSpace(o.PatternJson) ? "[]" : o.PatternJson,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                ) ?? new List<PatternRowDto>();
+            }
+            catch
+            {
+                rowsDto = new List<PatternRowDto>();
+            }
+
+            var ids = rowsDto.Select(r => r.ComponentId).Distinct().ToList();
+            var comps = await _db.Components
+                .Where(c => ids.Contains(c.Id))
+                .ToDictionaryAsync(c => c.Id, c => c);
+
+            var repeats = CalcRepeats(o.CapacityEstimate, o.OneCycleBeads);
+
+            var vm = new DesignOrderDetailsVm
+            {
+                Order = o,
+                Repeats = repeats,
+                RepeatsPerPiece = repeats,
+                NewJewelName = !string.IsNullOrWhiteSpace(o.DesignName) ? o.DesignName! : $"Custom #{o.Id}",
+                NewJewelPrice = o.UnitPriceEstimate
+            };
+
+            decimal totalMaterials = 0m;
+            int totalBeadsPerPiece = 0;
+
+            foreach (var r in rowsDto)
+            {
+                comps.TryGetValue(r.ComponentId, out var c);
+
+                var oneCycle = Math.Max(0, r.Count);
+                var perPiece = oneCycle * Math.Max(1, repeats);
+                var needed = perPiece * Math.Max(1, o.Quantity);
+                var unitPrice = c?.Price ?? 0m;
+                var costPerPiece = unitPrice * perPiece;
+
+                vm.Rows.Add(new DesignOrderDetailsVm.Row
+                {
+                    ComponentId = r.ComponentId,
+                    Name = !string.IsNullOrWhiteSpace(r.Name) ? r.Name! : (c?.Name ?? $"#{r.ComponentId}"),
+                    ImageUrl = string.IsNullOrWhiteSpace(r.ImageUrl) ? c?.ImageUrl : r.ImageUrl,
+                    Mm = r.Mm,
+                    CountOneCycle = oneCycle,
+                    PerPieceCount = perPiece,
+                    CountPerJewel = perPiece,
+                    NeededTotal = needed,
+                    Stock = c?.QuantityOnHand ?? 0,
+                    Price = unitPrice,
+                    CostPerJewel = costPerPiece
+                });
+
+                totalMaterials += costPerPiece;
+                totalBeadsPerPiece += perPiece;
+            }
+
+            vm.MaterialsCostPerJewel = totalMaterials;
+            vm.TotalBeadsPerPiece = totalBeadsPerPiece;
+            vm.TotalBeadsAll = totalBeadsPerPiece * Math.Max(1, o.Quantity);
+
+            return View("~/Views/Admin/DesignOrderProtocol.cshtml", vm);
+        }
+
         // POST /Admin/DesignOrder/{id}/Build
         [HttpPost("/Admin/DesignOrder/{id:int}/Build")]
         [ValidateAntiForgeryToken]

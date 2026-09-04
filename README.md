@@ -298,27 +298,27 @@ The **Build Protocol** acts as both the maker's manufacturing instruction and th
 
 ### Home
 
-![One Jewellery Company Home](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Home.jpg)
+![One Jewellery Company Home](wwwroot/Images/Portfolio/Home.jpg)
 
 ### Build Your Own Jewellery
 
-![Build Your Own Jewellery](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Build-your-own.jpg)
+![Build Your Own Jewellery](wwwroot/Images/Portfolio/Build-your-own.jpg)
 
 ### 3D Design Studio
 
-![3D Design Studio](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Design.jpg)
+![3D Design Studio](wwwroot/Images/Portfolio/Design.jpg)
 
 ### Components Shop
 
-![Components Shop](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Components.jpg)
+![Components Shop](wwwroot/Images/Portfolio/Components.jpg)
 
 ### Our Story
 
-![One Jewellery Company Our Story](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Our-story.jpg)
+![One Jewellery Company Our Story](wwwroot/Images/Portfolio/Our-story.jpg)
 
 ### Admin Dashboard
 
-![One Jewellery Company Admin Dashboard](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Admin-Dashboard.jpg)
+![One Jewellery Company Admin Dashboard](wwwroot/Images/Portfolio/Admin-Dashboard.jpg)
 
 ---
 

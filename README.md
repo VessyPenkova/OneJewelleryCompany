@@ -296,20 +296,29 @@ The **Build Protocol** acts as both the maker's manufacturing instruction and th
 
 ## 📸 Portfolio Screenshots
 
-Recommended portfolio views:
+### Home
 
-- **Home**
-- **Collections**
-- **Build Your Own Jewellery**
-- **3D Design Studio**
-- **Components Shop**
-- **Our Story**
-- **Admin Dashboard**
-- **Admin Components / Inventory**
-- **Admin Design Orders**
-- **Build Protocol**
+![One Jewellery Company Home](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Home.jpg)
 
-Screenshots should represent the current interface and architecture rather than earlier development versions.
+### Build Your Own Jewellery
+
+![Build Your Own Jewellery](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Build-your-own.jpg)
+
+### 3D Design Studio
+
+![3D Design Studio](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Design.jpg)
+
+### Components Shop
+
+![Components Shop](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Components.jpg)
+
+### Our Story
+
+![One Jewellery Company Our Story](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Our-story.jpg)
+
+### Admin Dashboard
+
+![One Jewellery Company Admin Dashboard](OneJevelsCompany.Web/wwwroot/Images/Portfolio/Admin-Dashboard.jpg)
 
 ---
 

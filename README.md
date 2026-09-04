@@ -332,6 +332,16 @@ The **Build Protocol** acts as both the maker's manufacturing instruction and th
 
 ---
 
+## 📄 License
+
+Copyright © 2026 Veselina Penkova. All rights reserved.
+
+This project is publicly available for portfolio and demonstration purposes only.
+
+Reuse, modification, redistribution, or commercial use of this source code is not permitted without prior written permission.
+
+---
+
 **Developed with ASP.NET Core MVC, Entity Framework Core & SQL Server**
 
 © 2026 One Jewellery Company

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using OneJevelsCompany.Web.Models;
+using OneJevelsCompany.Core.Entities;
 using OneJevelsCompany.Web.Services.Cart;
 
 namespace OneJewelsCompany.UnitTests;

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using OneJevelsCompany.Web.Data;
-using OneJevelsCompany.Web.Models;
+using OneJevelsCompany.Infrastructure.Persistence;
+using OneJevelsCompany.Core.Entities;
 using OneJevelsCompany.Web.Models.Admin;
-using OneJevelsCompany.Web.Services.Inventory;
+using OneJevelsCompany.Core.Interfaces;
 using System.Text.Json;
+using CoreJewelCategory = OneJevelsCompany.Core.Enums.JewelCategory;
+using WebJewelCategory = OneJevelsCompany.Web.Models.JewelCategory;
 
 namespace OneJevelsCompany.Web.Controllers
 {
@@ -222,7 +224,7 @@ namespace OneJevelsCompany.Web.Controllers
         [HttpGet]
         public IActionResult NewJewel()
         {
-            return View(new JewelEditViewModel { Category = JewelCategory.Necklace });
+            return View(new JewelEditViewModel { Category = WebJewelCategory.Necklace });
         }
 
         [HttpPost]
@@ -236,7 +238,7 @@ namespace OneJevelsCompany.Web.Controllers
             var j = new Jewel
             {
                 Name = vm.Name,
-                Category = vm.Category,
+                Category = (CoreJewelCategory)vm.Category,
                 BasePrice = vm.BasePrice,
                 QuantityOnHand = vm.QuantityOnHand,
                 ImageUrl = imageUrl
@@ -257,7 +259,7 @@ namespace OneJevelsCompany.Web.Controllers
             {
                 Id = j.Id,
                 Name = j.Name,
-                Category = j.Category,
+                Category = (WebJewelCategory)j.Category,
                 BasePrice = j.BasePrice,
                 QuantityOnHand = j.QuantityOnHand,
                 CurrentImageUrl = j.ImageUrl
@@ -275,7 +277,7 @@ namespace OneJevelsCompany.Web.Controllers
             if (j == null) return NotFound();
 
             j.Name = vm.Name;
-            j.Category = vm.Category;
+            j.Category = (CoreJewelCategory)vm.Category;
             j.BasePrice = vm.BasePrice;
             j.QuantityOnHand = vm.QuantityOnHand;
 
@@ -313,47 +315,7 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Admin/ReadyDesignOrders.cshtml", orders);
         }
 
-        // =====================================================================
-        // ============= DESIGN ORDER DETAILS + BUILD PROTOCOL==================
-        // =====================================================================
-        public class DesignOrderDetailsVm
-        {
-            public DesignOrder Order { get; set; } = null!;
-            public int Repeats { get; set; }
-            public int RepeatsPerPiece { get; set; }
-            public List<Row> Rows { get; set; } = new();
-            public int TotalBeadsPerPiece { get; set; }
-            public int TotalBeadsAll { get; set; }
-            public decimal MaterialsCostPerJewel { get; set; }
 
-            public class Row
-            {
-                public int ComponentId { get; set; }
-                public string Name { get; set; } = "";
-                public string? ImageUrl { get; set; }
-                public int Mm { get; set; }
-                public int CountOneCycle { get; set; }
-                public int PerPieceCount { get; set; }
-                public int CountPerJewel { get; set; }
-                public int NeededTotal { get; set; }
-                public int Stock { get; set; }
-                public decimal Price { get; set; }
-                public decimal CostPerJewel { get; set; }
-            }
-
-            public string NewJewelName { get; set; } = "";
-            public decimal? NewJewelPrice { get; set; }
-            public bool CreateJewel { get; set; } = true;
-        }
-
-        private sealed class PatternRowDto
-        {
-            public int ComponentId { get; set; }
-            public int Count { get; set; }
-            public int Mm { get; set; }
-            public string? ImageUrl { get; set; }
-            public string? Name { get; set; }
-        }
 
         private static int CalcRepeats(int capacityEstimate, int oneCycleBeads)
         {
@@ -390,7 +352,7 @@ namespace OneJevelsCompany.Web.Controllers
 
             var repeats = CalcRepeats(o.CapacityEstimate, o.OneCycleBeads);
 
-            var vm = new DesignOrderDetailsVm
+            var vm = new DesignOrderDetailsViewModel
             {
                 Order = o,
                 Repeats = repeats,
@@ -413,7 +375,7 @@ namespace OneJevelsCompany.Web.Controllers
                 var unitPrice = c?.Price ?? 0m;
                 var costPerPiece = unitPrice * perPiece;
 
-                vm.Rows.Add(new DesignOrderDetailsVm.Row
+                vm.Rows.Add(new DesignOrderComponentRowViewModel
                 {
                     ComponentId = r.ComponentId,
                     Name = !string.IsNullOrWhiteSpace(r.Name) ? r.Name! : (c?.Name ?? $"#{r.ComponentId}"),
@@ -466,7 +428,7 @@ namespace OneJevelsCompany.Web.Controllers
 
             var repeats = CalcRepeats(o.CapacityEstimate, o.OneCycleBeads);
 
-            var vm = new DesignOrderDetailsVm
+            var vm = new DesignOrderDetailsViewModel
             {
                 Order = o,
                 Repeats = repeats,
@@ -488,7 +450,7 @@ namespace OneJevelsCompany.Web.Controllers
                 var unitPrice = c?.Price ?? 0m;
                 var costPerPiece = unitPrice * perPiece;
 
-                vm.Rows.Add(new DesignOrderDetailsVm.Row
+                vm.Rows.Add(new DesignOrderComponentRowViewModel
                 {
                     ComponentId = r.ComponentId,
                     Name = !string.IsNullOrWhiteSpace(r.Name) ? r.Name! : (c?.Name ?? $"#{r.ComponentId}"),
@@ -629,22 +591,7 @@ namespace OneJevelsCompany.Web.Controllers
         // =====================================================================
         // =================== RESTOCK / PURCHASE QUEUE ========================
         // =====================================================================
-        public class PurchaseQueueRowVm
-        {
-            public int PurchaseNeedId { get; set; }
-            public int ComponentId { get; set; }
-            public string Name { get; set; } = "";
-            public string? Sku { get; set; }
-            public string? Dimensions { get; set; }
-            public string? SizeLabel { get; set; }
-            public string? ImageUrl { get; set; }
-            public int Stock { get; set; }
-            public decimal Price { get; set; }
-            public int NeededQty { get; set; }
-            public int MinOrderQty { get; set; }
-            public int SuggestedQty { get; set; }
-            public DateTime LastUpdatedUtc { get; set; }
-        }
+
 
         [HttpGet("/Admin/PurchaseQueue")]
         public async Task<IActionResult> PurchaseQueue()
@@ -661,7 +608,7 @@ namespace OneJevelsCompany.Web.Controllers
                 var moq = Math.Max(1, c.MinOrderQty);
                 var suggested = Math.Max(moq, (int)Math.Ceiling((double)p.NeededQty / moq) * moq);
 
-                return new PurchaseQueueRowVm
+                return new PurchaseQueueRowViewModel
                 {
                     PurchaseNeedId = p.Id,
                     ComponentId = p.ComponentId,
@@ -685,12 +632,7 @@ namespace OneJevelsCompany.Web.Controllers
             return View("~/Views/Admin/PurchaseQueue.cshtml", vm);
         }
 
-        private sealed class NeedSource
-        {
-            public int designOrderId { get; set; }
-            public int qty { get; set; }
-            public DateTime createdUtc { get; set; }
-        }
+
 
         private async Task UpsertPurchaseNeedAsync(int componentId, int addQty, int moqSnapshot, int designOrderId)
         {

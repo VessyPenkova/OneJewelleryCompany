@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OneJevelsCompany.Web.Data;
-using OneJevelsCompany.Web.Models;
+using OneJevelsCompany.Core.Entities;
+using OneJevelsCompany.Core.Enums;
+using OneJevelsCompany.Infrastructure.Persistence;
 using OneJevelsCompany.Web.Services.Cart;
-using System.Text.Json;
 
 namespace OneJevelsCompany.Web.Controllers
 {
@@ -24,6 +24,7 @@ namespace OneJevelsCompany.Web.Controllers
         {
             var items = _cart.GetCart(HttpContext);
             ViewBag.Total = items.Sum(i => i.LineTotal);
+
             return View(items);
         }
 
@@ -32,6 +33,7 @@ namespace OneJevelsCompany.Web.Controllers
         public IActionResult Update(string sku, int qty)
         {
             _cart.UpdateQuantity(HttpContext, sku, qty);
+
             return RedirectToAction(nameof(Cart));
         }
 
@@ -40,6 +42,7 @@ namespace OneJevelsCompany.Web.Controllers
         public IActionResult Remove(string sku)
         {
             _cart.Remove(HttpContext, sku);
+
             return RedirectToAction(nameof(Cart));
         }
 
@@ -48,90 +51,186 @@ namespace OneJevelsCompany.Web.Controllers
         public IActionResult Clear()
         {
             _cart.Clear(HttpContext);
+
             return RedirectToAction(nameof(Cart));
         }
 
-        // ===== NEW: Add a custom-built piece with per-component quantities =====
-        // Expected form fields (from Build page):
-        //   Category            -> JewelCategory (1=Bracelet, 2=Necklace)
-        //   Quantity            -> number of finished pieces
-        //   LaborPerPiece       -> decimal
-        //   DesignName          -> string (optional)
-        //   Components[ID].Quantity (for each component ID; 0 means exclude)
+        // ===== Add a custom-built piece with per-component quantities =====
+        // Expected form fields:
+        // Category
+        // Quantity
+        // LaborPerPiece
+        // DesignName
+        // Components[ID].Quantity
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> AddCustomRecipe(
-            JewelCategory Category,
-            int Quantity,
-            decimal LaborPerPiece,
-            string? DesignName)
+        public async Task<IActionResult> AddCustomRecipe( JewelCategory Category, int Quantity, decimal LaborPerPiece, string? DesignName)
         {
-            // 1) Parse posted per-component quantities
             var picks = new List<(int id, int qty)>();
+
             foreach (var key in Request.Form.Keys)
             {
-                if (!key.StartsWith("Components[") || !key.EndsWith("].Quantity"))
+                if (!key.StartsWith("Components[") ||
+                    !key.EndsWith("].Quantity"))
+                {
                     continue;
+                }
 
                 var i1 = key.IndexOf('[') + 1;
                 var i2 = key.IndexOf(']', i1);
-                if (i1 <= 0 || i2 <= i1) continue;
 
-                if (!int.TryParse(key.Substring(i1, i2 - i1), out var compId)) continue;
-                if (!int.TryParse(Request.Form[key], out var qty)) qty = 0;
+                if (i1 <= 0 || i2 <= i1)
+                {
+                    continue;
+                }
 
-                if (qty > 0) picks.Add((compId, qty));
+                if (!int.TryParse( key.Substring(i1, i2 - i1), out var compId))
+                {
+                    continue;
+                }
+
+                if (!int.TryParse( Request.Form[key], out var qty))
+                {
+                    qty = 0;
+                }
+
+                if (qty > 0)
+                {
+                    picks.Add((compId, qty));
+                }
             }
 
             if (Quantity < 1 || picks.Count == 0)
             {
                 TempData["Err"] = "Enter at least one component quantity and a valid finished quantity.";
+
                 return RedirectToAction("Build", "Shop");
             }
 
-            // 2) Load selected components to compute price and summary
             var ids = picks.Select(p => p.id).ToList();
-            var comps = await _db.Components
-                                 .Where(c => ids.Contains(c.Id))
-                                 .ToListAsync();
+            var comps = await _db.Components.Where(c => ids.Contains(c.Id)).ToListAsync();
 
             if (comps.Count != ids.Distinct().Count())
             {
-                TempData["Err"] = "One or more selected components no longer exist.";
+                TempData["Err"] ="One or more selected components no longer exist.";
+
                 return RedirectToAction("Build", "Shop");
             }
 
-            // 3) Compute unit price = materials per piece + labor per piece
             decimal materials = 0m;
+
             foreach (var pick in picks)
             {
                 var c = comps.First(x => x.Id == pick.id);
+
                 materials += c.Price * pick.qty;
             }
-            if (LaborPerPiece < 0) LaborPerPiece = 0;
+
+            if (LaborPerPiece < 0)
+            {
+                LaborPerPiece = 0;
+            }
+
             var unitPrice = materials + LaborPerPiece;
-
-            // 4) Human summary & CSV (repeat IDs to encode per-component quantities)
             var compsById = comps.ToDictionary(c => c.Id, c => c);
-            var summary = string.Join(", ", picks.Select(p => $"{p.qty}× {compsById[p.id].Name}"));
-            var csv = string.Join(",", picks.SelectMany(p => Enumerable.Repeat(p.id, p.qty)));
+            var summary = string.Join( ", ", picks.Select( p => $"{p.qty}× {compsById[p.id].Name}"));
+            var csv = string.Join( ",", picks.SelectMany( p => Enumerable.Repeat(p.id, p.qty)));
 
-            // 5) Create cart line (uses ONLY existing CartItem fields)
             var item = new CartItem
             {
                 Sku = $"CUST-{Guid.NewGuid():N}".Substring(0, 12),
-                Title = $"{(string.IsNullOrWhiteSpace(DesignName) ? "Custom" : DesignName!.Trim())} ({Category})",
+                Title = $"{(string.IsNullOrWhiteSpace(DesignName) ? "Custom" : DesignName.Trim())} ({Category})",
                 Category = Category,
-                Quantity = Quantity,        // number of finished pieces ordered
-                UnitPrice = unitPrice,      // price per finished piece
+                Quantity = Quantity,
+                UnitPrice = unitPrice,
                 ComponentsSummary = summary,
-                ComponentIdsCsv = csv,      // fallback encoding your current InventoryService understands
+                ComponentIdsCsv = csv,
                 IsCustomBuild = true,
                 CustomDesignName = string.IsNullOrWhiteSpace(DesignName) ? "Custom" : DesignName.Trim()
             };
 
             _cart.AddToCart(HttpContext, item);
+            return RedirectToAction(nameof(Cart));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> AddComponents()
+        {
+            var picks = new List<(int id, int qty)>();
+
+            foreach (var key in Request.Form.Keys)
+            {
+                if (!key.StartsWith("Components[") ||
+                    !key.EndsWith("].Quantity"))
+                {
+                    continue;
+                }
+
+                var i1 = key.IndexOf('[') + 1;
+                var i2 = key.IndexOf(']', i1);
+
+                if (i1 <= 0 || i2 <= i1)
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(key.Substring(i1, i2 - i1), out var compId))
+                {
+                    continue;
+                }
+
+                if (!int.TryParse(Request.Form[key], out var qty))
+                {
+                    qty = 0;
+                }
+
+                if (qty > 0)
+                {
+                    picks.Add((compId, qty));
+                }
+            }
+
+            if (picks.Count == 0)
+            {
+                TempData["Err"] = "Please choose at least one component.";
+
+                return RedirectToAction("Components", "Shop");
+            }
+
+            var ids = picks.Select(p => p.id).Distinct().ToList();
+
+            var comps = await _db.Components
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (comps.Count != ids.Count)
+            {
+                TempData["Err"] = "One or more selected components no longer exist.";
+
+                return RedirectToAction("Components", "Shop");
+            }
+
+            foreach (var pick in picks)
+            {
+                var component = comps.First(c => c.Id == pick.id);
+
+                var item = new CartItem
+                {
+                    Sku = $"COMP-{component.Id}",
+                    Title = component.Name,
+                    Quantity = pick.qty,
+                    UnitPrice = component.Price,
+                    ComponentsSummary = component.Name,
+                    ComponentIdsCsv = component.Id.ToString(),
+                    IsCustomBuild = false
+                };
+
+                _cart.AddToCart(HttpContext, item);
+            }
+
             return RedirectToAction(nameof(Cart));
         }
     }

@@ -11,9 +11,7 @@ namespace OneJevelsCompany.Web.Controllers
         private readonly RoleManager<IdentityRole> _roles;
         private readonly IWebHostEnvironment _env;
 
-        public AdminSetupController(UserManager<IdentityUser> users,
-                                    RoleManager<IdentityRole> roles,
-                                    IWebHostEnvironment env)
+        public AdminSetupController(UserManager<IdentityUser> users, RoleManager<IdentityRole> roles, IWebHostEnvironment env)
         {
             _users = users;
             _roles = roles;

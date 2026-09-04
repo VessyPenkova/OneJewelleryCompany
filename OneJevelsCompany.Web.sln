@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneJewelsCompany.Playwright
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneJewelsCompany.UnitTests", "OneJewelsCompany.UnitTests\OneJewelsCompany.UnitTests.csproj", "{B71B149B-3942-4E2B-A2A1-C8B89C5D5E31}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneJevelsCompany.Core", "..\OneJevelsCompany.Core\OneJevelsCompany.Core.csproj", "{6F1EF73D-5426-4F0C-BE4D-0EDE2D752058}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneJevelsCompany.Infrastructure", "..\OneJevelsCompany.Infrastructure\OneJevelsCompany.Infrastructure.csproj", "{1F9742C7-32DF-458C-9137-1BB3885E4CFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +30,14 @@ Global
 		{B71B149B-3942-4E2B-A2A1-C8B89C5D5E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B71B149B-3942-4E2B-A2A1-C8B89C5D5E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B71B149B-3942-4E2B-A2A1-C8B89C5D5E31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F1EF73D-5426-4F0C-BE4D-0EDE2D752058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F1EF73D-5426-4F0C-BE4D-0EDE2D752058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F1EF73D-5426-4F0C-BE4D-0EDE2D752058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F1EF73D-5426-4F0C-BE4D-0EDE2D752058}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F9742C7-32DF-458C-9137-1BB3885E4CFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F9742C7-32DF-458C-9137-1BB3885E4CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F9742C7-32DF-458C-9137-1BB3885E4CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F9742C7-32DF-458C-9137-1BB3885E4CFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

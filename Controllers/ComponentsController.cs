@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using OneJevelsCompany.Web.Data;
-using OneJevelsCompany.Web.Models;
 using System.ComponentModel.DataAnnotations;
+using OneJevelsCompany.Infrastructure.Persistence;
+using OneJevelsCompany.Core.Entities;
+using OneJevelsCompany.Web.Models.Admin;
 
 namespace OneJevelsCompany.Web.Controllers
 {
@@ -23,6 +24,7 @@ namespace OneJevelsCompany.Web.Controllers
             _db = db;
             _env = env;
         }
+
         //==========================================================
         //======================== helpers =========================
         //==========================================================
@@ -39,22 +41,28 @@ namespace OneJevelsCompany.Web.Controllers
                 foreach (var i in items.Where(i => i.Value == selectedId.Value.ToString()))
                     i.Selected = true;
             }
+
             return items;
         }
+
         //==========================================================
         //============ GET: /Admin/Components/New ==================
+        //============ ALSO: /Admin/NewComponent ===================
         //==========================================================
         [HttpGet("New")]
+        [HttpGet("/Admin/NewComponent")]
         public async Task<IActionResult> New()
         {
             ViewBag.Categories = await CategorySelectListAsync();
             return View("~/Views/Admin/NewComponent.cshtml", new AdminNewComponentVm());
         }
+
         //==========================================================
         //============ POST: /Admin/Components/New =================
+        //============ ALSO: /Admin/NewComponent ===================
         //==========================================================
-        
         [HttpPost("New")]
+        [HttpPost("/Admin/NewComponent")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New(AdminNewComponentVm vm, IFormFile? image)
         {
@@ -64,7 +72,9 @@ namespace OneJevelsCompany.Web.Controllers
                 return View("~/Views/Admin/NewComponent.cshtml", vm);
             }
 
-            var categoryExists = await _db.ComponentCategories.AnyAsync(c => c.Id == vm.ComponentCategoryId);
+            var categoryExists = await _db.ComponentCategories
+                .AnyAsync(c => c.Id == vm.ComponentCategoryId);
+
             if (!categoryExists)
             {
                 ModelState.AddModelError(nameof(vm.ComponentCategoryId), "Category not found.");
@@ -76,23 +86,33 @@ namespace OneJevelsCompany.Web.Controllers
             bool duplicate = await _db.Components.AnyAsync(c =>
                 c.ComponentCategoryId == vm.ComponentCategoryId &&
                 c.Name == vm.Name.Trim());
+
             if (duplicate)
             {
-                ModelState.AddModelError(nameof(vm.Name),
+                ModelState.AddModelError(
+                    nameof(vm.Name),
                     "An item with this name already exists in the selected category.");
+
                 ViewBag.Categories = await CategorySelectListAsync(vm.ComponentCategoryId);
                 return View("~/Views/Admin/NewComponent.cshtml", vm);
             }
 
             string? imageUrl = null;
+
             if (image != null && image.Length > 0)
             {
                 var uploads = Path.Combine(_env.WebRootPath, "uploads", "components");
                 Directory.CreateDirectory(uploads);
+
                 var ext = Path.GetExtension(image.FileName);
                 var fileName = $"{Guid.NewGuid():N}{ext}";
-                using var fs = new FileStream(Path.Combine(uploads, fileName), FileMode.Create);
+
+                using var fs = new FileStream(
+                    Path.Combine(uploads, fileName),
+                    FileMode.Create);
+
                 await image.CopyToAsync(fs);
+
                 imageUrl = $"/uploads/components/{fileName}";
             }
 
@@ -168,10 +188,16 @@ namespace OneJevelsCompany.Web.Controllers
             {
                 var uploads = Path.Combine(_env.WebRootPath, "uploads", "components");
                 Directory.CreateDirectory(uploads);
+
                 var ext = Path.GetExtension(image.FileName);
                 var fileName = $"{Guid.NewGuid():N}{ext}";
-                using var fs = new FileStream(Path.Combine(uploads, fileName), FileMode.Create);
+
+                using var fs = new FileStream(
+                    Path.Combine(uploads, fileName),
+                    FileMode.Create);
+
                 await image.CopyToAsync(fs);
+
                 c.ImageUrl = $"/uploads/components/{fileName}";
             }
 
@@ -185,52 +211,10 @@ namespace OneJevelsCompany.Web.Controllers
             c.Description = vm.Description;
 
             await _db.SaveChangesAsync();
+
             TempData["ok"] = "Component saved.";
             return Redirect("/Admin/Components");
         }
-
-        //==========================================================
-        //======================= ViewModels =======================
-        //==========================================================
-        public class AdminNewComponentVm
-        {
-            [Required, MaxLength(160)]
-            public string Name { get; set; } = string.Empty;
-
-            [Required]
-            [Display(Name = "Category")]
-            public int ComponentCategoryId { get; set; }
-
-            [Range(0, double.MaxValue)]
-            public decimal Price { get; set; }
-
-            [MaxLength(80)] public string? Sku { get; set; }
-            [MaxLength(40)] public string? Color { get; set; }
-            [MaxLength(40)] public string? SizeLabel { get; set; }
-
-            // e.g. "4x4;5x5;6x6"
-            [MaxLength(120)] public string? Dimensions { get; set; }
-        }
-
-        public class AdminComponentEditVm
-        {
-            public int Id { get; set; }
-
-            [Required, MaxLength(160)]
-            public string Name { get; set; } = string.Empty;
-
-            public decimal Price { get; set; }
-            public int QuantityOnHand { get; set; }
-
-            [MaxLength(80)] public string? Sku { get; set; }
-            [MaxLength(40)] public string? Color { get; set; }
-            [MaxLength(40)] public string? SizeLabel { get; set; }
-            [MaxLength(120)] public string? Dimensions { get; set; }
-
-            public string? CurrentImageUrl { get; set; }
-
-            [MaxLength(4000)]
-            public string? Description { get; set; }
-        }
+ 
     }
 }

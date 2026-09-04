@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using OneJevelsCompany.Core.Enums;
 
 namespace OneJevelsCompany.Web.Models.Admin
 {

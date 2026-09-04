@@ -1,4 +1,4 @@
-﻿using OneJevelsCompany.Web.Models;
+﻿using OneJevelsCompany.Core.Entities;
 
 namespace OneJevelsCompany.Web.Services.Cart
 {

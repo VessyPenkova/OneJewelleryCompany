@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OneJevelsCompany.Web.Models;
 using System.Reflection.Emit;
 
-namespace OneJevelsCompany.Web.Data
+namespace OneJevelsCompany.In
 {
     public class AppDbContext : IdentityDbContext<IdentityUser>
     {

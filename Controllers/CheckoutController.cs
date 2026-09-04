@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using OneJevelsCompany.Web.Data;
+using OneJevelsCompany.Core.Interfaces;
+using OneJevelsCompany.Infrastructure.Persistence;
 using OneJevelsCompany.Web.Services.Cart;
-using OneJevelsCompany.Web.Services.Inventory;
-using OneJevelsCompany.Web.Services.Orders;
-using OneJevelsCompany.Web.Services.Payment;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OneJevelsCompany.Web.Controllers
 {
